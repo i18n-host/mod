@@ -1,6 +1,6 @@
 {
   "type": "module",
   "dependencies": {
-    "@3-/mysql2rust": "^0.1.15"
+    "@3-/mysql2rust": "^0.1.16"
   }
 }

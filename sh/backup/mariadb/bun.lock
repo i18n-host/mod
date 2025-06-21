@@ -3,12 +3,12 @@
   "workspaces": {
     "": {
       "dependencies": {
-        "@3-/mysql2rust": "^0.1.15",
+        "@3-/mysql2rust": "^0.1.16",
       },
     },
   },
   "packages": {
-    "@3-/mysql2rust": ["@3-/mysql2rust@0.1.15", "", { "dependencies": { "@3-/rm": "^0.1.2" } }, "sha512-rA5AKHFUAt2sFscpRLSoPHCjOyw0/6S5sRGhsqyrGivG9Y2NhXNrVCES4oG54Fu7VnqU3egIi3U36l5wLeLfTQ=="],
+    "@3-/mysql2rust": ["@3-/mysql2rust@0.1.16", "", { "dependencies": { "@3-/rm": "^0.1.3" } }, "sha512-ejmHTPUu2zK3PSLwgkeh+754We0SajrdlsTJa8HeLDtAaKZ930bmlKFi6tF8nWmmNAJsFKDghmHvJ/Qlf6MAPw=="],
 
     "@3-/rm": ["@3-/rm@0.1.3", "", {}, "sha512-tU0A3Pp8/34lW+d+lMF9eO5P/zo0wLdUnOoYmYa/TBVmNENm0yUkum9Lr6dBrePgBktQgf34QCU4iZwTDGOscQ=="],
   }
