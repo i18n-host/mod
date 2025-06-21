@@ -40,12 +40,17 @@ loadSql = (dir)=>
         'CREATE TABLE ',
         'CREATE TABLE IF NOT EXISTS'
       )
-      for kind from ['FUNCTION','TRIGGER']
+      for kind from ['FUNCTION','TRIGGER','PROCEDURE']
         prefix = 'CREATE '+kind+' '
         if sql.startsWith prefix
           t = sql.slice(prefix.length)
           name = t.slice(0,t.indexOf('('))
-          sql = 'DROP '+kind+' IF EXISTS '+name+';\n'+sql
+          if kind != 'PROCEDURE'
+            sql = 'DROP '+kind+' IF EXISTS '+name+';\n'+sql
+          else
+            name = name.replaceAll('`','')
+            if await $one("SELECT COUNT(1) FROM information_schema.routines WHERE routine_name='#{name}' AND ROUTINE_TYPE='PROCEDURE' AND ROUTINE_SCHEMA=?",MYSQL_DB)
+              li.unshift "DROP PROCEDURE #{name};"
       li.push sql
 
   tmpfp = join tmpdir(), 'import.sql'
