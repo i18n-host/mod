@@ -25,6 +25,8 @@ await do =>
     return
 
   r = sqlLi read(DUMP_SQL)
+  for [kind,name,sql] from r
+    console.log kind, name, sql
   return
 
 # nt = load MOD+'.nt'
