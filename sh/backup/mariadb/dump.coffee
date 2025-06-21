@@ -69,8 +69,8 @@ await do =>
         )
         for [kind,dump_name,sql] from li
           write(
-            join dir,'db/'+kind+'_'+dump_name+'.rs'
-            rust GEN
+            join dir,'db', kind, dump_name+'.sql'
+            sql
           )
         break
 
