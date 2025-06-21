@@ -1,6 +1,6 @@
 #![allow(non_snake_case, clippy::too_many_arguments)]
 
-use mysql_macro::{q1, Result};
+use mysql_macro::{Result, q1};
 
 pub async fn signInLog(
   uid: u64,
