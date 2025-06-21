@@ -60,7 +60,7 @@ loadSql = (dir)=>
 
   write(
     tmpfp
-    'START TRANSACTION;SET SESSION default_storage_engine=\'RocksDB\';'+li.join('\n')+'COMMIT;'
+    'START TRANSACTION;SET SESSION default_storage_engine=\'RocksDB\';\n'+li.join('\n')+'\nCOMMIT;'
   )
   await importSql tmpfp
   return
@@ -82,6 +82,7 @@ await Promise.all parse(read join(ROOT,'Cargo.toml')).workspace.members.map (i)=
 
 await load PWD
 
+process.exit()
 # scan = (dir)=>
 #   if not existsSync dir
 #     return
@@ -177,4 +178,3 @@ await load PWD
 #
 # await Promise.all ing
 #
-process.exit()
