@@ -20,7 +20,9 @@ firstUpperCase = (str) =>
 PWD = import.meta.dirname
 ROOT = dirname(dirname(dirname(PWD)))
 
-dumpSql = (dir_db, li) =>
+dumpSql = (dir, li) =>
+  dir_db = join dir,'db'
+  rm(dir_db)
   for [kind,dump_name,sql] from li
     write(
       join dir_db, kind, dump_name+'.sql'
@@ -33,9 +35,7 @@ genRs = (mod_name, li) =>
     GEN.splice(0,GEN.length)
     dir = join(ROOT,i)
     if existsSync(dir)
-      dir_db = join dir,'db'
-      rm(dir_db)
-      dumpSql dir_db, li
+      dumpSql dir, li
       for [kind,dump_name,sql] from li
         gen(
           kind
