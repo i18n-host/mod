@@ -9,22 +9,22 @@
   ansis > gray greenBright
   which
 
-# ROOT = resolve(
-#   uridir import.meta
-#   '../../..'
-# )
-#
-# {
-#   MYSQL_DB
-#   MYSQL_HOST
-#   MYSQL_PWD
-#   MYSQL_PORT
-#   MYSQL_USER
-# } = process.env
-#
-# mariadb = 'mariadb'
-# mariadb = if await which(mariadb, { nothrow: true }) then mariadb else 'mysql'
-#
+PWD = import.meta.dirname
+ROOT = resolve PWD, '../../..'
+
+{
+  MYSQL_DB
+  MYSQL_HOST
+  MYSQL_PWD
+  MYSQL_PORT
+  MYSQL_USER
+} = process.env
+
+mariadb = 'mariadb'
+mariadb = if await which(mariadb, { nothrow: true }) then mariadb else 'mysql'
+
+console.log mariadb
+
 # importSql = (sql)=>
 #   $"#{mariadb} -h #{MYSQL_HOST} -P#{MYSQL_PORT} -u #{MYSQL_USER} #{MYSQL_DB} < #{sql}"
 #
@@ -123,4 +123,4 @@
 #
 # await Promise.all ing
 #
-# process.exit()
+process.exit()
