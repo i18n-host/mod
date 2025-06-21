@@ -33,7 +33,11 @@ await do =>
       dump_name = name.slice(p)
     else
       prefix = dump_name = name
-    gen kind, name, sql
+    gen(
+      kind
+      dump_name.charAt(0).toLowerCase() + dump_name.slice(1)
+      sql
+    )
 
   console.log rust GEN
   return
