@@ -20,6 +20,14 @@ firstUpperCase = (str) =>
 PWD = import.meta.dirname
 ROOT = dirname(dirname(dirname(PWD)))
 
+dumpSql = (dir_db, li) =>
+  for [kind,dump_name,sql] from li
+    write(
+      join dir_db, kind, dump_name+'.sql'
+      sql
+    )
+  return
+
 genRs = (mod_name, li) =>
   for i in [mod_name, mod_name+'_']
     GEN.splice(0,GEN.length)
@@ -27,14 +35,11 @@ genRs = (mod_name, li) =>
     if existsSync(dir)
       dir_db = join dir,'db'
       rm(dir_db)
+      dumpSql dir_db, li
       for [kind,dump_name,sql] from li
         gen(
           kind
           dump_name
-          sql
-        )
-        write(
-          join dir_db, kind, dump_name+'.sql'
           sql
         )
       write(
@@ -71,17 +76,11 @@ await do =>
       sql
     ]
 
-  global = []
-
   for [mod_name, li] from mod.entries()
     console.log '# '+mod_name
     if not genRs(mod_name, li)
-      global
+      dumpSql ROOT, li
 
-  write(
-    join PWD,'global.sql'
-    global.join('\n')
-  )
   return
 
 
