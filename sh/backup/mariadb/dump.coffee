@@ -16,6 +16,7 @@ firstUpperCase = (str) =>
       return i
   return -1
 
+[GEN, gen] = gener()
 
 await do =>
   [DUMP_SQL] = process.argv.slice(2)
@@ -33,11 +34,11 @@ await do =>
     else
       prefix = dump_name = name
     console.log kind, prefix, dump_name
+
   return
 
 # nt = load MOD+'.nt'
 #
-# [GEN, gen] = gener()
 #
 # if r.length
 #   mod = new Map
