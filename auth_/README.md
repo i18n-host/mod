@@ -23,7 +23,6 @@ USE dev;
 
 SET SESSION default_storage_engine = rocksdb;
 
--- 品牌信息表
 CREATE TABLE authBrand (
     id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
     v VARBINARY(255) NOT NULL,
@@ -31,51 +30,85 @@ CREATE TABLE authBrand (
     UNIQUE KEY uq_v (v)
 );
 
--- GPU信息表
-CREATE TABLE authGpu (id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT, v VARBINARY(255) NOT NULL, PRIMARY KEY (id), UNIQUE KEY uq_v (v));
+CREATE TABLE authGpu (
+    id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    v VARBINARY(255) NOT NULL,
+    PRIMARY KEY (id),
+    UNIQUE KEY uq_v (v)
+);
 
--- CPU信息表 (<<< 已删除)
+CREATE TABLE authArch (
+    id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    v VARBINARY(255) NOT NULL,
+    PRIMARY KEY (id),
+    UNIQUE KEY uq_v (v)
+);
 
--- CPU架构信息表
-CREATE TABLE authArch (id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT, v VARBINARY(255) NOT NULL, PRIMARY KEY (id), UNIQUE KEY uq_v (v));
+CREATE TABLE authOsName (
+    id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    v VARBINARY(255) NOT NULL,
+    PRIMARY KEY (id),
+    UNIQUE KEY uq_v (v)
+);
 
--- 操作系统名称表
-CREATE TABLE authOsName (id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT, v VARBINARY(255) NOT NULL, PRIMARY KEY (id), UNIQUE KEY uq_v (v));
+CREATE TABLE authOsVer (
+    id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    v VARBINARY(255) NOT NULL,
+    PRIMARY KEY (id),
+    UNIQUE KEY uq_v (v)
+);
 
--- 操作系统版本表
-CREATE TABLE authOsVer (id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT, v VARBINARY(255) NOT NULL, PRIMARY KEY (id), UNIQUE KEY uq_v (v));
+CREATE TABLE authBrowserName (
+    id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    v VARBINARY(255) NOT NULL,
+    PRIMARY KEY (id),
+    UNIQUE KEY uq_v (v)
+);
 
--- 浏览器名称表
-CREATE TABLE authBrowserName (id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT, v VARBINARY(255) NOT NULL, PRIMARY KEY (id), UNIQUE KEY uq_v (v));
+CREATE TABLE authBrowserVer (
+    id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    v VARBINARY(255) NOT NULL,
+    PRIMARY KEY (id),
+    UNIQUE KEY uq_v (v)
+);
 
--- 浏览器版本表
-CREATE TABLE authBrowserVer (id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT, v VARBINARY(255) NOT NULL, PRIMARY KEY (id), UNIQUE KEY uq_v (v));
+CREATE TABLE authBrowserLang (
+    id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    v VARBINARY(255) NOT NULL,
+    PRIMARY KEY (id),
+    UNIQUE KEY uq_v (v)
+);
 
--- 浏览器语言表
-CREATE TABLE authBrowserLang (id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT, v VARBINARY(255) NOT NULL, PRIMARY KEY (id), UNIQUE KEY uq_v (v));
+CREATE TABLE authOs (
+    id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    name_id BIGINT UNSIGNED NOT NULL,
+    ver_id BIGINT UNSIGNED NOT NULL,
+    PRIMARY KEY (id),
+    UNIQUE KEY uq_os (name_id, ver_id)
+);
 
--- 操作系统组合表
-CREATE TABLE authOs (id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT, name_id BIGINT UNSIGNED NOT NULL, ver_id BIGINT UNSIGNED NOT NULL, PRIMARY KEY (id), UNIQUE KEY uq_os (name_id, ver_id));
+CREATE TABLE authBrowser (
+    id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    name_id BIGINT UNSIGNED NOT NULL,
+    lang_id BIGINT UNSIGNED NOT NULL,
+    ver_id BIGINT UNSIGNED NOT NULL,
+    PRIMARY KEY (id),
+    UNIQUE KEY uq_browser (name_id, lang_id, ver_id)
+);
 
--- 浏览器组合表
-CREATE TABLE authBrowser (id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT, name_id BIGINT UNSIGNED NOT NULL, lang_id BIGINT UNSIGNED NOT NULL, ver_id BIGINT UNSIGNED NOT NULL, PRIMARY KEY (id), UNIQUE KEY uq_browser (name_id, lang_id, ver_id));
-
--- 硬件组合表 (<<< 已修改)
 CREATE TABLE authDevice (
     id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
     brand_id BIGINT UNSIGNED NOT NULL,
     arch_id BIGINT UNSIGNED NOT NULL,
-    -- cpu_id BIGINT UNSIGNED NOT NULL, (<<< 已删除)
     gpu_id BIGINT UNSIGNED NOT NULL,
     cpu_num MEDIUMINT UNSIGNED NOT NULL COMMENT 'CPU核心数',
     w SMALLINT UNSIGNED NOT NULL COMMENT '分辨率宽',
     h SMALLINT UNSIGNED NOT NULL COMMENT '分辨率高',
     dpi TINYINT UNSIGNED NOT NULL,
     PRIMARY KEY (id),
-    UNIQUE KEY uq_hardware (brand_id, arch_id, gpu_id, cpu_num, w, h, dpi) -- <<< 修改唯一键
+    UNIQUE KEY uq_hardware (brand_id, arch_id, gpu_id, cpu_num, w, h, dpi)
 );
 
--- 登录日志表
 CREATE TABLE authSignInLog (
   id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
   uid BIGINT UNSIGNED NOT NULL,
@@ -90,13 +123,9 @@ CREATE TABLE authSignInLog (
 
 DELIMITER $$
 
--- 存储过程 (<<< 已修改)
 CREATE PROCEDURE `authSignInLog`(
-    -- 核心身份信息
     IN p_uid BIGINT UNSIGNED,
     IN p_ip VARBINARY(16),
-
-    -- 与JS函数返回值顺序一致的参数
     IN p_timezone TINYINT,
     IN p_dpi TINYINT UNSIGNED,
     IN p_w SMALLINT UNSIGNED,
@@ -105,10 +134,7 @@ CREATE PROCEDURE `authSignInLog`(
     IN p_arch VARBINARY(255),
     IN p_cpu_num MEDIUMINT UNSIGNED,
     IN p_gpu VARBINARY(255),
-
-    -- 其他不由该JS函数提供的参数
     IN p_brand VARBINARY(255),
-    -- IN p_cpu VARBINARY(255), (<<< 已删除)
     IN p_os_name VARBINARY(255),
     IN p_browser_name VARBINARY(255),
     IN p_browser_ver VARBINARY(255),
@@ -117,56 +143,42 @@ CREATE PROCEDURE `authSignInLog`(
 BEGIN
     DECLARE v_brand_id, v_gpu_id, v_arch_id, v_os_name_id, v_os_ver_id, v_browser_name_id, v_browser_ver_id, v_browser_lang_id, v_os_id, v_browser_id, v_device_id BIGINT UNSIGNED;
 
-    -- 查找或插入品牌信息
     SELECT id INTO v_brand_id FROM authBrand WHERE v = p_brand;
     IF v_brand_id IS NULL THEN INSERT INTO authBrand (v) VALUES (p_brand); SET v_brand_id = LAST_INSERT_ID(); END IF;
 
-    -- 查找或插入GPU信息
     SELECT id INTO v_gpu_id FROM authGpu WHERE v = p_gpu;
     IF v_gpu_id IS NULL THEN INSERT INTO authGpu (v) VALUES (p_gpu); SET v_gpu_id = LAST_INSERT_ID(); END IF;
 
-    -- 查找或插入CPU信息 (<<< 已删除)
-
-    -- 查找或插入CPU架构信息
     SELECT id INTO v_arch_id FROM authArch WHERE v = p_arch;
     IF v_arch_id IS NULL THEN INSERT INTO authArch (v) VALUES (p_arch); SET v_arch_id = LAST_INSERT_ID(); END IF;
 
-    -- 查找或插入操作系统名称
     SELECT id INTO v_os_name_id FROM authOsName WHERE v = p_os_name;
     IF v_os_name_id IS NULL THEN INSERT INTO authOsName (v) VALUES (p_os_name); SET v_os_name_id = LAST_INSERT_ID(); END IF;
 
-    -- 查找或插入操作系统版本
     SELECT id INTO v_os_ver_id FROM authOsVer WHERE v = p_os_ver;
     IF v_os_ver_id IS NULL THEN INSERT INTO authOsVer (v) VALUES (p_os_ver); SET v_os_ver_id = LAST_INSERT_ID(); END IF;
 
-    -- 查找或插入浏览器名称
     SELECT id INTO v_browser_name_id FROM authBrowserName WHERE v = p_browser_name;
     IF v_browser_name_id IS NULL THEN INSERT INTO authBrowserName (v) VALUES (p_browser_name); SET v_browser_name_id = LAST_INSERT_ID(); END IF;
 
-    -- 查找或插入浏览器版本
     SELECT id INTO v_browser_ver_id FROM authBrowserVer WHERE v = p_browser_ver;
     IF v_browser_ver_id IS NULL THEN INSERT INTO authBrowserVer (v) VALUES (p_browser_ver); SET v_browser_ver_id = LAST_INSERT_ID(); END IF;
 
-    -- 查找或插入浏览器语言
     SELECT id INTO v_browser_lang_id FROM authBrowserLang WHERE v = p_browser_lang;
     IF v_browser_lang_id IS NULL THEN INSERT INTO authBrowserLang (v) VALUES (p_browser_lang); SET v_browser_lang_id = LAST_INSERT_ID(); END IF;
 
-    -- 查找或插入操作系统组合
     SELECT id INTO v_os_id FROM authOs WHERE name_id = v_os_name_id AND ver_id = v_os_ver_id;
     IF v_os_id IS NULL THEN INSERT INTO authOs (name_id, ver_id) VALUES (v_os_name_id, v_os_ver_id); SET v_os_id = LAST_INSERT_ID(); END IF;
 
-    -- 查找或插入浏览器组合
     SELECT id INTO v_browser_id FROM authBrowser WHERE name_id = v_browser_name_id AND lang_id = v_browser_lang_id AND ver_id = v_browser_ver_id;
     IF v_browser_id IS NULL THEN INSERT INTO authBrowser (name_id, lang_id, ver_id) VALUES (v_browser_name_id, v_browser_lang_id, v_browser_ver_id); SET v_browser_id = LAST_INSERT_ID(); END IF;
 
-    -- 查找或插入硬件组合 (<<< 修改逻辑)
     SELECT id INTO v_device_id FROM authDevice WHERE brand_id = v_brand_id AND arch_id = v_arch_id AND gpu_id = v_gpu_id AND cpu_num = p_cpu_num AND w = p_w AND h = p_h AND dpi = p_dpi;
     IF v_device_id IS NULL THEN
         INSERT INTO authDevice (brand_id, arch_id, gpu_id, cpu_num, w, h, dpi) VALUES (v_brand_id, v_arch_id, v_gpu_id, p_cpu_num, p_w, p_h, p_dpi);
         SET v_device_id = LAST_INSERT_ID();
     END IF;
 
-    -- 插入登录日志
     INSERT INTO authSignInLog (uid, ip, device_id, browser_id, os_id, timezone, ts) VALUES (p_uid, p_ip, v_device_id, v_browser_id, v_os_id, p_timezone, UNIX_TIMESTAMP());
 END$$
 

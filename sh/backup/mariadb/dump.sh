@@ -33,10 +33,9 @@ cmd="mise exec -- $mysqldump \
   --routines \
   -d $MYSQL_DB"
 echo $cmd
-$cmd -h$MYSQL_HOST -P$MYSQL_PORT -u$MYSQL_USER >/tmp/$MYSQL_DB.sql
+$cmd --host=$MYSQL_HOST \
+  --port=$MYSQL_PORT --user=$MYSQL_USER >/tmp/$MYSQL_DB.sql
 set -x
 
-mv /tmp/$MYSQL_DB.sql .
-
 set -x
-# mise exec -- ./dump.coffee
+mise exec -- ./dump.coffee /tmp/$MYSQL_DB.sql
