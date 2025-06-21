@@ -1,16 +1,13 @@
 #!/usr/bin/env coffee
 
 > path > join resolve basename dirname
-  chalk
   fs > existsSync readdirSync statSync
   zx/globals:
   @3-/dbq > $:$db $one
   @3-/read
   @3-/walk
   ansis > gray greenBright
-  @3-/nt/load.js
   which
-
 
 # ROOT = resolve(
 #   uridir import.meta
