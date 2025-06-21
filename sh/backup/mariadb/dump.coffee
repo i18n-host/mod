@@ -50,6 +50,7 @@ await do =>
       sql
     ]
 
+  global = []
   for [mod_name, li] from mod.entries()
     GEN.splice(0,GEN.length)
     console.log '# '+mod_name
@@ -66,6 +67,11 @@ await do =>
           join dir,'src/db.rs'
           rust GEN
         )
+        for [kind,dump_name,sql] from li
+          write(
+            join dir,'db/'+kind+'_'+dump_name+'.rs'
+            rust GEN
+          )
         break
 
   console.log root
