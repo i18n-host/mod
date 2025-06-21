@@ -27,8 +27,14 @@ mariadb = if await which(mariadb, { nothrow: true }) then mariadb else 'mysql'
 importSql = (sql)=>
   $"#{mariadb} -h #{MYSQL_HOST} -P#{MYSQL_PORT} -u #{MYSQL_USER} #{MYSQL_DB} < #{sql}"
 
-parse(read join(ROOT,'Cargo.toml')).workspace.members.map(load)
-console.log cargo_toml
+load = (dir)=>
+  console.log dir
+  return
+
+parse(read join(ROOT,'Cargo.toml')).workspace.members.map (i)=>
+  load(join(ROOT, i))
+
+await load PWD
 
 # scan = (dir)=>
 #   if not existsSync dir
