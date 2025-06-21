@@ -31,6 +31,7 @@ importSql = (sql)=>
   $"#{mariadb} -h #{MYSQL_HOST} -P#{MYSQL_PORT} -u #{MYSQL_USER} #{MYSQL_DB} < #{sql}"
 
 loadSql = (dir)=>
+  console.log dir
   sql = []
   for i from readdirSync dir
     if i.endsWith '.sql'
