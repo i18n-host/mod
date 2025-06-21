@@ -1,0 +1,18 @@
+[package]
+name = "user_"
+version = "0.1.0"
+edition = "2024"
+license = "MulanPSL-2.0"
+repository = "https://github.com/i18n-site/mod.git"
+homepage = "https://github.com/i18n-site/mod/tree/dev/mod/user_"
+description = "user_"
+keywords = ["hpc", "mod"]
+
+[dependencies]
+aok = "0.1.17"
+ctx_ = { version = "0.1.8", features = ["user"] }
+tracing = "0.1.41"
+
+[dev-dependencies]
+tokio = { version = "1.45.1", features = ["macros", "rt", "rt-multi-thread"] }
+xboot = "0.1.28"

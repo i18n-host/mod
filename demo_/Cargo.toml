@@ -1,0 +1,23 @@
+[package]
+name = "demo_"
+version = "0.1.1"
+edition = "2024"
+license = "MulanPSL-2.0"
+repository = "https://github.com/i18n-site/mod.git"
+homepage = "https://github.com/i18n-site/mod/tree/dev/mod/demo_"
+description = "demo_"
+keywords = ["hpc", "mod"]
+
+[package.metadata.docs.rs]
+all-features = true
+
+[dependencies]
+aok = "0.1.17"
+http = "1.3.1"
+iat = { version = "0.1.2" }
+ih = "0.1.15"
+tracing = "0.1.41"
+
+[dev-dependencies]
+tokio = { version = "1.45.1", features = ["macros", "rt", "rt-multi-thread"] }
+xboot = "0.1.28"

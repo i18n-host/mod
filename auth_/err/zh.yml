@@ -1,0 +1,8 @@
+password:
+  err: '密码错误。忘记密码了？<a rel="reset">点此重置</a>'
+  too_short: "密码太短"
+address:
+  invalid_mail: "无效的邮件地址"
+  exist: "此账户已注册，请直接登录"
+  disable_tempmail: "禁用一次性邮箱注册"
+

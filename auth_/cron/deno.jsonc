@@ -1,0 +1,22 @@
+{
+  "imports": {
+    "@8v/bantld": "jsr:@8v/bantld@^0.1.6",
+    "@8v/cron": "jsr:@8v/cron@^0.1.7",
+    "@8v/heartbeat": "jsr:@8v/heartbeat@^0.1.35"
+  },
+  "deploy": {
+    // "project": "helloworld",
+    "entrypoint": "main.js",
+    "exclude": [
+      "**/node_modules"
+    ]
+  },
+  "lint": {
+    "rules": {
+      "exclude": [
+        "no-slow-types",
+        "no-ex-assign"
+      ]
+    }
+  }
+}

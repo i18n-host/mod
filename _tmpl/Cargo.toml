@@ -1,0 +1,21 @@
+[package]
+name = "_tmpl"
+version = "0.1.0"
+edition = "2024"
+license = "MulanPSL-2.0"
+repository = "https://github.com/i18n-site/mod.git"
+homepage = "https://github.com/i18n-site/mod/tree/dev/mod/_tmpl"
+description = "_tmpl"
+keywords = ["hpc", "mod"]
+
+[package.metadata.docs.rs]
+all-features = true
+
+[dependencies]
+aok = "0.1.15"
+iat = { version = "0.1.0" }
+tracing = "0.1.41"
+
+[dev-dependencies]
+tokio = { version = "1.43.0", features = ["macros", "rt", "rt-multi-thread"] }
+xboot = "0.1.11"

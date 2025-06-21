@@ -1,0 +1,161 @@
+{
+  "version": "4",
+  "specifiers": {
+    "jsr:@8v/bantld@~0.1.6": "0.1.6",
+    "jsr:@8v/cron-once@*": "0.1.2",
+    "jsr:@8v/cron-once@0.1.2": "0.1.2",
+    "jsr:@8v/curl@~0.1.6": "0.1.7",
+    "jsr:@8v/curl@~0.1.7": "0.1.7",
+    "jsr:@8v/heartbeat@~0.1.35": "0.1.35",
+    "jsr:@8v/hsec@~0.1.2": "0.1.2",
+    "jsr:@8v/kind-name@~0.1.2": "0.1.2",
+    "jsr:@8v/notify@~0.1.3": "0.1.3",
+    "jsr:@8v/pg@~0.1.3": "0.1.3",
+    "jsr:@8v/redis@~0.1.14": "0.1.14",
+    "jsr:@8v/tld@~0.1.2": "0.1.2",
+    "jsr:@y0/postgres@^3.4.5": "3.4.5",
+    "npm:@3-/split@~0.1.4": "0.1.4",
+    "npm:ansis@^3.12.0": "3.17.0",
+    "npm:ioredis@^5.6.0": "5.6.0",
+    "npm:punycode@^2.3.1": "2.3.1",
+    "npm:tldts@^6.1.82": "6.1.83"
+  },
+  "jsr": {
+    "@8v/bantld@0.1.6": {
+      "integrity": "822bf7f718be1d91f6f0b7edf9db7f03147ca5e03c7a845769c4f3296ed191da",
+      "dependencies": [
+        "jsr:@8v/curl@~0.1.7",
+        "jsr:@8v/redis",
+        "jsr:@8v/tld",
+        "npm:punycode"
+      ]
+    },
+    "@8v/cron-once@0.1.2": {
+      "integrity": "b405940990e4fee0a9cc0c2e4f06827fffc5fd695b0962709f47e0e288e532f0"
+    },
+    "@8v/curl@0.1.7": {
+      "integrity": "dde8d0e0f2e978b5431167800d14af18f3b088b36b7fd86ed99848a155b058b4"
+    },
+    "@8v/heartbeat@0.1.35": {
+      "integrity": "0e044f8a680755700d28a7caaa14ad5190d67b2939d11ea9a3ff5e8de62ca5e1",
+      "dependencies": [
+        "jsr:@8v/hsec",
+        "jsr:@8v/kind-name",
+        "jsr:@8v/notify",
+        "jsr:@8v/pg"
+      ]
+    },
+    "@8v/hsec@0.1.2": {
+      "integrity": "29649526b7f22d1cfedb3f3ebd23653ebb0695299296b0681b61792028ae27ee"
+    },
+    "@8v/kind-name@0.1.2": {
+      "integrity": "d84d4e2123bb02c5d4e3892d323b561b33765ba5804683a5a4c32fd1ec7374a1"
+    },
+    "@8v/notify@0.1.3": {
+      "integrity": "8095f470e4bddacd1b142043ef09465f0298b42925775be29fb0797eface3ec7",
+      "dependencies": [
+        "jsr:@8v/curl@~0.1.6"
+      ]
+    },
+    "@8v/pg@0.1.3": {
+      "integrity": "260e538204996423fb346ddf553abc13d07f14f50b81f864df71f495e983b1c9",
+      "dependencies": [
+        "jsr:@y0/postgres",
+        "npm:ansis"
+      ]
+    },
+    "@8v/redis@0.1.14": {
+      "integrity": "a48b1bffacb0c4db1cb7d48961a390102b869122e0632e2ec82a2604fc4ff300",
+      "dependencies": [
+        "npm:@3-/split",
+        "npm:ioredis"
+      ]
+    },
+    "@8v/tld@0.1.2": {
+      "integrity": "0e2d54cd8a5d4c6e92502889538581c059d4bf0952f430b3d8b32f18c537d88e",
+      "dependencies": [
+        "npm:tldts"
+      ]
+    },
+    "@y0/postgres@3.4.5": {
+      "integrity": "f492bde63a811acc0caac0c9294a329472a8b38834660287ffac20a29f02774b"
+    }
+  },
+  "npm": {
+    "@3-/split@0.1.4": {
+      "integrity": "sha512-XtCF6n8LsKVxatmSVaxPhXg8fPjmD+Fs1aZII6u23YUhkhGkw97wu3k1QFVWMdEEePlbnM8WrFsKhp5Lj02r8g=="
+    },
+    "@ioredis/commands@1.2.0": {
+      "integrity": "sha512-Sx1pU8EM64o2BrqNpEO1CNLtKQwyhuXuqyfH7oGKCk+1a33d2r5saW8zNwm3j6BTExtjrv2BxTgzzkMwts6vGg=="
+    },
+    "ansis@3.17.0": {
+      "integrity": "sha512-0qWUglt9JEqLFr3w1I1pbrChn1grhaiAR2ocX1PP/flRmxgtwTzPFFFnfIlD6aMOLQZgSuCRlidD70lvx8yhzg=="
+    },
+    "cluster-key-slot@1.1.2": {
+      "integrity": "sha512-RMr0FhtfXemyinomL4hrWcYJxmX6deFdCxpJzhDttxgO1+bcCnkk+9drydLVDmAMG7NE6aN/fl4F7ucU/90gAA=="
+    },
+    "debug@4.4.0": {
+      "integrity": "sha512-6WTZ/IxCY/T6BALoZHaE4ctp9xm+Z5kY/pzYaCHRFeyVhojxlrm+46y68HA6hr0TcwEssoxNiDEUJQjfPZ/RYA==",
+      "dependencies": [
+        "ms"
+      ]
+    },
+    "denque@2.1.0": {
+      "integrity": "sha512-HVQE3AAb/pxF8fQAoiqpvg9i3evqug3hoiwakOyZAwJm+6vZehbkYXZ0l4JxS+I3QxM97v5aaRNhj8v5oBhekw=="
+    },
+    "ioredis@5.6.0": {
+      "integrity": "sha512-tBZlIIWbndeWBWCXWZiqtOF/yxf6yZX3tAlTJ7nfo5jhd6dctNxF7QnYlZLZ1a0o0pDoen7CgZqO+zjNaFbJAg==",
+      "dependencies": [
+        "@ioredis/commands",
+        "cluster-key-slot",
+        "debug",
+        "denque",
+        "lodash.defaults",
+        "lodash.isarguments",
+        "redis-errors",
+        "redis-parser",
+        "standard-as-callback"
+      ]
+    },
+    "lodash.defaults@4.2.0": {
+      "integrity": "sha512-qjxPLHd3r5DnsdGacqOMU6pb/avJzdh9tFX2ymgoZE27BmjXrNy/y4LoaiTeAb+O3gL8AfpJGtqfX/ae2leYYQ=="
+    },
+    "lodash.isarguments@3.1.0": {
+      "integrity": "sha512-chi4NHZlZqZD18a0imDHnZPrDeBbTtVN7GXMwuGdRH9qotxAjYs3aVLKc7zNOG9eddR5Ksd8rvFEBc9SsggPpg=="
+    },
+    "ms@2.1.3": {
+      "integrity": "sha512-6FlzubTLZG3J2a/NVCAleEhjzq5oxgHyaCU9yYXvcLsvoVaHJq/s5xXI6/XXP6tz7R9xAOtHnSO/tXtF3WRTlA=="
+    },
+    "punycode@2.3.1": {
+      "integrity": "sha512-vYt7UD1U9Wg6138shLtLOvdAu+8DsC/ilFtEVHcH+wydcSpNE20AfSOduf6MkRFahL5FY7X1oU7nKVZFtfq8Fg=="
+    },
+    "redis-errors@1.2.0": {
+      "integrity": "sha512-1qny3OExCf0UvUV/5wpYKf2YwPcOqXzkwKKSmKHiE6ZMQs5heeE/c8eXK+PNllPvmjgAbfnsbpkGZWy8cBpn9w=="
+    },
+    "redis-parser@3.0.0": {
+      "integrity": "sha512-DJnGAeenTdpMEH6uAJRK/uiyEIH9WVsUmoLwzudwGJUwZPp80PDBWPHXSAGNPwNvIXAbe7MSUB1zQFugFml66A==",
+      "dependencies": [
+        "redis-errors"
+      ]
+    },
+    "standard-as-callback@2.1.0": {
+      "integrity": "sha512-qoRRSyROncaz1z0mvYqIE4lCd9p2R90i6GxW3uZv5ucSu8tU7B5HXUP1gG8pVZsYNVaXjk8ClXHPttLyxAL48A=="
+    },
+    "tldts-core@6.1.83": {
+      "integrity": "sha512-I2wb9OJc6rXyh9d4aInhSNWChNI+ra6qDnFEGEwe9OoA68lE4Temw29bOkf1Uvwt8VZS079t1BFZdXVBmmB4dw=="
+    },
+    "tldts@6.1.83": {
+      "integrity": "sha512-FHxxNJJ0WNsEBPHyC1oesQb3rRoxpuho/z2g3zIIAhw1WHJeQsUzK1jYK8TI1/iClaa4fS3Z2TCA9mtxXsENSg==",
+      "dependencies": [
+        "tldts-core"
+      ]
+    }
+  },
+  "workspace": {
+    "dependencies": [
+      "jsr:@8v/bantld@~0.1.6",
+      "jsr:@8v/cron@~0.1.7",
+      "jsr:@8v/heartbeat@~0.1.35"
+    ]
+  }
+}

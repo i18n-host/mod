@@ -1,0 +1,7 @@
+password:
+  err: 1
+  too_short: 2
+address:
+  invalid_mail: 3
+  exist: 4
+  disable_tempmail: 5
