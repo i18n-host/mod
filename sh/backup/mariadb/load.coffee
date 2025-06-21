@@ -12,6 +12,8 @@
 
 PWD = import.meta.dirname
 ROOT = resolve PWD, '../../..'
+TABLE = 'table'
+$.verbose = 1
 
 {
   MYSQL_DB
@@ -27,12 +29,22 @@ mariadb = if await which(mariadb, { nothrow: true }) then mariadb else 'mysql'
 importSql = (sql)=>
   $"#{mariadb} -h #{MYSQL_HOST} -P#{MYSQL_PORT} -u #{MYSQL_USER} #{MYSQL_DB} < #{sql}"
 
+loadSql = (dir)=>
+  for i from readdirSync dir
+    if i.endsWith '.sql'
+      fp = join dir, i
+      console.log fp
+      await importSql(fp)
+  return
+
 load = (dir)=>
   dir_db = join dir, 'db'
   if not existsSync dir_db
     return
   li = new Set readdirSync dir_db
-  console.log li
+  if li.delete(TABLE)
+    table_dir = join dir_db, TABLE
+    await loadSql(table_dir)
 
   return
 
