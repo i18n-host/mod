@@ -5,8 +5,9 @@
   zx/globals:
   @3-/dbq > $:$db $one
   @3-/read
-  @3-/walk
+  @3-/write
   ansis > gray greenBright
+  os > tmpdir
   which
   @iarna/toml > parse
 
@@ -30,11 +31,17 @@ importSql = (sql)=>
   $"#{mariadb} -h #{MYSQL_HOST} -P#{MYSQL_PORT} -u #{MYSQL_USER} #{MYSQL_DB} < #{sql}"
 
 loadSql = (dir)=>
+  sql = []
   for i from readdirSync dir
     if i.endsWith '.sql'
       fp = join dir, i
-      console.log fp
-      await importSql(fp)
+      sql.push '-- '+fp
+      sql.push read(fp)
+      # await importSql(fp)
+
+  tmpfp = join tmpdir(), 'import.sql'
+  write(tmpfp, sql.join('\n'))
+  await importSql tmpfp
   return
 
 load = (dir)=>
@@ -48,7 +55,7 @@ load = (dir)=>
 
   return
 
-parse(read join(ROOT,'Cargo.toml')).workspace.members.map (i)=>
+await Promise.all parse(read join(ROOT,'Cargo.toml')).workspace.members.map (i)=>
   load(join(ROOT, i))
 
 await load PWD
