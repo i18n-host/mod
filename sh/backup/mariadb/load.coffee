@@ -51,6 +51,9 @@ loadSql = (dir)=>
             name = name.replaceAll('`','')
             if await $one("SELECT COUNT(1) FROM information_schema.routines WHERE routine_name='#{name}' AND ROUTINE_TYPE='PROCEDURE' AND ROUTINE_SCHEMA=?",MYSQL_DB)
               li.unshift "DROP PROCEDURE #{name};"
+
+          sql = 'DELIMITER ;;\n'+sql+'\nDELIMITER ;'
+          break
       li.push sql
 
   tmpfp = join tmpdir(), 'import.sql'
