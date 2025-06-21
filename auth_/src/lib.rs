@@ -1,3 +1,4 @@
+pub(crate) mod db;
 mod r;
 
 pub mod err;
