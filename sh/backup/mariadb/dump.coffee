@@ -33,8 +33,9 @@ await do =>
       dump_name = name.slice(p)
     else
       prefix = dump_name = name
-    console.log kind, prefix, dump_name
+    gen kind, name, sql
 
+  console.log rust GEN
   return
 
 # nt = load MOD+'.nt'

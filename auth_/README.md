@@ -123,25 +123,27 @@ CREATE TABLE authSignInLog (
 
 DELIMITER $$
 
-CREATE PROCEDURE `authSignInLog`(
-    IN p_uid BIGINT UNSIGNED,
-    IN p_ip VARBINARY(16),
-    IN p_timezone TINYINT,
-    IN p_dpi TINYINT UNSIGNED,
-    IN p_w SMALLINT UNSIGNED,
-    IN p_h SMALLINT UNSIGNED,
-    IN p_os_ver VARBINARY(255),
-    IN p_arch VARBINARY(255),
-    IN p_cpu_num MEDIUMINT UNSIGNED,
-    IN p_gpu VARBINARY(255),
-    IN p_brand VARBINARY(255),
-    IN p_os_name VARBINARY(255),
-    IN p_browser_name VARBINARY(255),
-    IN p_browser_ver VARBINARY(255),
-    IN p_browser_lang VARBINARY(255)
+CREATE FUNCTION `authSignInLog`(
+    p_uid BIGINT UNSIGNED,
+    p_ip VARBINARY(16),
+    p_timezone TINYINT,
+    p_dpi TINYINT UNSIGNED,
+    p_w SMALLINT UNSIGNED,
+    p_h SMALLINT UNSIGNED,
+    p_os_ver VARBINARY(255),
+    p_arch VARBINARY(255),
+    p_cpu_num MEDIUMINT UNSIGNED,
+    p_gpu VARBINARY(255),
+    p_brand VARBINARY(255),
+    p_os_name VARBINARY(255),
+    p_browser_name VARBINARY(255),
+    p_browser_ver VARBINARY(255),
+    p_browser_lang VARBINARY(255)
 )
+RETURNS BIGINT UNSIGNED
+MODIFIES SQL DATA
 BEGIN
-    DECLARE v_brand_id, v_gpu_id, v_arch_id, v_os_name_id, v_os_ver_id, v_browser_name_id, v_browser_ver_id, v_browser_lang_id, v_os_id, v_browser_id, v_device_id BIGINT UNSIGNED;
+    DECLARE v_brand_id, v_gpu_id, v_arch_id, v_os_name_id, v_os_ver_id, v_browser_name_id, v_browser_ver_id, v_browser_lang_id, v_os_id, v_browser_id, v_device_id, v_log_id BIGINT UNSIGNED;
 
     SELECT id INTO v_brand_id FROM authBrand WHERE v = p_brand;
     IF v_brand_id IS NULL THEN INSERT INTO authBrand (v) VALUES (p_brand); SET v_brand_id = LAST_INSERT_ID(); END IF;
@@ -180,17 +182,16 @@ BEGIN
     END IF;
 
     INSERT INTO authSignInLog (uid, ip, device_id, browser_id, os_id, timezone, ts) VALUES (p_uid, p_ip, v_device_id, v_browser_id, v_os_id, p_timezone, UNIX_TIMESTAMP());
+
+    SET v_log_id = LAST_INSERT_ID();
+    RETURN v_log_id;
 END$$
 
 DELIMITER ;
 
-
--- 测试调用 (<<< 已修改)
-CALL authSignInLog(
+SELECT authSignInLog(
     1001,                           -- p_uid
     INET6_ATON('198.51.100.10'),    -- p_ip
-
-    -- 与JS函数返回值顺序一致的参数
     -48,                            -- p_timezone
     20,                             -- p_dpi
     1920,                           -- p_w
@@ -199,16 +200,9 @@ CALL authSignInLog(
     'x86_64',                       -- p_arch
     10,                             -- p_cpu_num
     'NVIDIA GeForce RTX 3080',      -- p_gpu
-
-    -- 其他参数
     'Dell',                         -- p_brand
-    -- 'Intel(R) Core(TM) i9-10900K', (<<< 已删除)
     'Windows',                      -- p_os_name
     'Chrome',                       -- p_browser_name
     '108.0.0.0',                    -- p_browser_ver
     'en-US'                         -- p_browser_lang
 );
-
--- 查询验证
-SELECT * FROM authSignInLog;
-SELECT * FROM authDevice;
