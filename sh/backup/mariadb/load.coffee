@@ -55,7 +55,10 @@ loadSql = (dir)=>
 
   tmpfp = join tmpdir(), 'import.sql'
 
-  write(tmpfp, 'START TRANSACTION;SET SESSION default_storage_engine=\'RocksDB\';'+li.join('\n')+'COMMIT;')
+  write(
+    tmpfp
+    'START TRANSACTION;SET SESSION default_storage_engine=\'RocksDB\';'+li.join('\n')+'COMMIT;'
+  )
   await importSql tmpfp
   return
 
