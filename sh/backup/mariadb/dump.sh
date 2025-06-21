@@ -2,7 +2,9 @@
 
 DIR=$(realpath $0) && DIR=${DIR%/*}
 cd $DIR
-export MYSQL_PWD=$MYSQL_PWD
+set -a
+. ../../../../srv/conf/mariadb.env
+set +a
 set -xe
 
 mise trust
@@ -33,10 +35,8 @@ cmd="mise exec -- $mysqldump \
 echo $cmd
 $cmd -h$MYSQL_HOST -P$MYSQL_PORT -u$MYSQL_USER >/tmp/$MYSQL_DB.sql
 set -x
-# --column-statistics=0 \
-# --compatible=no_table_options
 
 mv /tmp/$MYSQL_DB.sql .
 
 set -x
-mise exec -- ./dump.coffee
+# mise exec -- ./dump.coffee
