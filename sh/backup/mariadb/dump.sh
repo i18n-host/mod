@@ -38,4 +38,8 @@ $cmd --host=$MYSQL_HOST \
 set -x
 
 set -x
+
+if [ ! -d "node_modules" ]; then
+  bun i
+fi
 mise exec -- ./dump.coffee /tmp/$MYSQL_DB.sql
