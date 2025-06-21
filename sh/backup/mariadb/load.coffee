@@ -40,11 +40,12 @@ loadSql = (dir)=>
         'CREATE TABLE ',
         'CREATE TABLE IF NOT EXISTS'
       )
-      if sql.startsWith 'CREATE FUNCTION '
-        t = sql.slice(16)
-        name = t.slice(0,t.indexOf('('))
-        sql = 'DROP FUNCTION IF EXISTS '+name+';\n'+sql
-
+      for kind from ['FUNCTION','TRIGGER']
+        prefix = 'CREATE '+kind+' '
+        if sql.startsWith prefix
+          t = sql.slice(prefix.length)
+          name = t.slice(0,t.indexOf('('))
+          sql = 'DROP '+kind+' IF EXISTS '+name+';\n'+sql
       li.push sql
 
   tmpfp = join tmpdir(), 'import.sql'
