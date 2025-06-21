@@ -26,7 +26,13 @@ await do =>
 
   r = sqlLi read(DUMP_SQL)
   for [kind,name,sql] from r
-    console.log kind, name, sql
+    p = firstUpperCase(name)
+    if ~p
+      prefix = name.slice(0,p)
+      dump_name = name.slice(p)
+    else
+      prefix = dump_name = name
+    console.log kind, prefix, dump_name
   return
 
 # nt = load MOD+'.nt'
