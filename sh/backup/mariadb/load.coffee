@@ -48,7 +48,7 @@ loadSql = (dir)=>
       li.push sql
 
   tmpfp = join tmpdir(), 'import.sql'
-  write(tmpfp, li.join('\n'))
+  write(tmpfp, 'START TRANSACTION;'+li.join('\n')+'COMMIT;')
   # await importSql tmpfp
   return
 
