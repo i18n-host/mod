@@ -36,8 +36,10 @@ loadSql = (dir)=>
     if i.endsWith '.sql'
       fp = join dir, i
       sql.push '-- '+fp
-      sql.push read(fp)
-      # await importSql(fp)
+      sql.push read(fp).replaceAll(
+        'CREATE TABLE ',
+        'CREATE TABLE IF NOT EXISTS'
+      )
 
   tmpfp = join tmpdir(), 'import.sql'
   write(tmpfp, sql.join('\n'))
