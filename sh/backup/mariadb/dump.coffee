@@ -26,6 +26,9 @@ await do =>
     return
 
   r = sqlLi read(DUMP_SQL)
+
+  mod = new Map
+
   for [kind,name,sql] from r
     p = firstUpperCase(name)
     if ~p
@@ -33,13 +36,36 @@ await do =>
       dump_name = name.slice(p)
     else
       prefix = dump_name = name
-    gen(
-      kind
-      dump_name.charAt(0).toLowerCase() + dump_name.slice(1)
-      sql
-    )
 
-  console.log rust GEN
+    dump_name = dump_name.charAt(0).toLowerCase() + dump_name.slice(1)
+
+    li = mod.get(prefix)
+    if not li
+      li = []
+      mod.set(prefix, li)
+    li.push [
+      kind
+      dump_name
+      sql
+    ]
+
+  for [mod_name, li] from mod.entries()
+    GEN.splice(0,GEN.length)
+    console.log '# '+mod_name
+    for [kind,dump_name,sql] from li
+      gen(
+        kind
+        dump_name
+        sql
+      )
+    console.log GEN
+  #   gen(
+  #     kind
+  #     dump_name
+  #     sql
+  #   )
+  #
+  # console.log rust GEN
   return
 
 # nt = load MOD+'.nt'
