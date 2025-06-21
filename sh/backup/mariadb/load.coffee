@@ -6,7 +6,6 @@
   @3-/dbq > $:$db $one
   @3-/read
   @3-/write
-  ansis > gray greenBright
   os > tmpdir
   which
   @iarna/toml > parse
@@ -32,19 +31,25 @@ importSql = (sql)=>
 
 loadSql = (dir)=>
   console.log dir
-  sql = []
+  li = []
   for i from readdirSync dir
     if i.endsWith '.sql'
       fp = join dir, i
-      sql.push '-- '+fp
-      sql.push read(fp).replaceAll(
+      li.push '-- '+fp
+      sql = read(fp).replaceAll(
         'CREATE TABLE ',
         'CREATE TABLE IF NOT EXISTS'
       )
+      if sql.startsWith 'CREATE FUNCTION '
+        t = sql.slice(16)
+        name = t.slice(0,t.indexOf('('))
+        sql = 'DROP FUNCTION IF EXISTS '+name+';\n'+sql
+
+      li.push sql
 
   tmpfp = join tmpdir(), 'import.sql'
-  write(tmpfp, sql.join('\n'))
-  await importSql tmpfp
+  write(tmpfp, li.join('\n'))
+  # await importSql tmpfp
   return
 
 load = (dir)=>
@@ -55,7 +60,8 @@ load = (dir)=>
   if li.delete(TABLE)
     table_dir = join dir_db, TABLE
     await loadSql(table_dir)
-
+  for i from li
+    await loadSql(join dir_db, i)
   return
 
 await Promise.all parse(read join(ROOT,'Cargo.toml')).workspace.members.map (i)=>
