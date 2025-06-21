@@ -28,7 +28,12 @@ importSql = (sql)=>
   $"#{mariadb} -h #{MYSQL_HOST} -P#{MYSQL_PORT} -u #{MYSQL_USER} #{MYSQL_DB} < #{sql}"
 
 load = (dir)=>
-  console.log dir
+  dir_db = join dir, 'db'
+  if not existsSync dir_db
+    return
+  li = new Set readdirSync dir_db
+  console.log li
+
   return
 
 parse(read join(ROOT,'Cargo.toml')).workspace.members.map (i)=>
