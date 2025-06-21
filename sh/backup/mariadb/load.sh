@@ -6,5 +6,5 @@ set -a
 . ../../../../srv/conf/mariadb.env
 set +a
 set -xe
-
+bun i
 exec mise exec -- ./load.coffee
