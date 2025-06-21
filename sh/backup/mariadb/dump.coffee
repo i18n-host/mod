@@ -1,6 +1,6 @@
 #!/usr/bin/env coffee
 
-> path > join resolve
+> path > join dirname
   fs > existsSync rmSync
   @3-/read
   @3-/write
@@ -16,7 +16,6 @@ firstUpperCase = (str) =>
       return i
   return -1
 
-[GEN, gen] = gener()
 
 await do =>
   [DUMP_SQL] = process.argv.slice(2)
@@ -25,6 +24,8 @@ await do =>
     console.error 'miss arg xxx.sql'
     return
 
+  root = dirname(dirname(dirname(import.meta.dirname)))
+  [GEN, gen] = gener()
   r = sqlLi read(DUMP_SQL)
 
   mod = new Map
@@ -58,7 +59,17 @@ await do =>
         dump_name
         sql
       )
-    console.log GEN
+    for i in [mod_name, mod_name+'_']
+      dir = join(root,i)
+      if existsSync(dir)
+        write(
+          join dir,'src/db.rs'
+          rust GEN
+        )
+        break
+
+  console.log root
+  return
   #   gen(
   #     kind
   #     dump_name
