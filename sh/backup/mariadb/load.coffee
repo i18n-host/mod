@@ -46,7 +46,7 @@ loadSql = (dir)=>
           t = sql.slice(prefix.length)
           name = t.slice(0,t.indexOf('('))
           if kind != 'PROCEDURE'
-            sql = 'DROP '+kind+' IF EXISTS '+name+';\n'+sql
+            li.unshift 'DROP '+kind+' IF EXISTS '+name+';'
           else
             name = name.replaceAll('`','')
             if await $one("SELECT COUNT(1) FROM information_schema.routines WHERE routine_name='#{name}' AND ROUTINE_TYPE='PROCEDURE' AND ROUTINE_SCHEMA=?",MYSQL_DB)
@@ -54,8 +54,9 @@ loadSql = (dir)=>
       li.push sql
 
   tmpfp = join tmpdir(), 'import.sql'
-  write(tmpfp, 'START TRANSACTION;'+li.join('\n')+'COMMIT;')
-  # await importSql tmpfp
+
+  write(tmpfp, 'START TRANSACTION;SET SESSION default_storage_engine=\'RocksDB\';'+li.join('\n')+'COMMIT;')
+  await importSql tmpfp
   return
 
 load = (dir)=>
