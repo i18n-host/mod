@@ -21,6 +21,7 @@ pub struct BrowserMeta {
 #[static_init::dynamic]
 pub static UA: UserAgentParser = UserAgentParser::new();
 
+// pub(crate) async fn test(
 pub async fn test(
   timezone: i8,
   dpi: u8,
