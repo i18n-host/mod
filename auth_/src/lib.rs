@@ -22,20 +22,24 @@ pub struct BrowserMeta {
 pub static UA: UserAgentParser = UserAgentParser::new();
 
 fn ver_tuple<S: AsRef<str>>(v: Option<S>) -> (u32, u32) {
-  let v = v.map(|i| i.as_ref()).unwrap_or_default();
-  let mut iter = v.split('.');
-  (
-    iter
-      .next()
-      .unwrap_or_default()
-      .parse::<u32>()
-      .unwrap_or_default(),
-    iter
-      .next()
-      .unwrap_or_default()
-      .parse::<u32>()
-      .unwrap_or_default(),
-  )
+  if let Some(v) = v {
+    let v = v.as_ref();
+    let mut iter = v.split('.');
+    (
+      iter
+        .next()
+        .unwrap_or_default()
+        .parse::<u32>()
+        .unwrap_or_default(),
+      iter
+        .next()
+        .unwrap_or_default()
+        .parse::<u32>()
+        .unwrap_or_default(),
+    )
+  } else {
+    (0, 0)
+  }
 }
 
 // pub(crate) async fn test(
@@ -77,9 +81,7 @@ pub async fn test(
     .map(|s| s.replace('"', ""))
     .unwrap_or_else(|| ua.os.family.to_string());
 
-  let browser_name: String = ua.client.family.to_string();
-
-  let browser_ver: u32 = ver_tuple(ua.client.version);
+  let browser_v = ver_tuple(ua.client.version);
 
   let browser_lang: &str = headers
     .get("accept-language")
@@ -103,8 +105,9 @@ pub async fn test(
     os_v1,
     os_v2,
     os_name,
-    browser_name,
-    browser_ver,
+    ua.client.family,
+    browser_v.0,
+    browser_v.1,
     browser_lang,
   )
   .await?;
