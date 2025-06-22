@@ -81,8 +81,8 @@ pub fn test(
     gpu.replace(", Unspecified Version", ""),
     headers
       .get("sec-ch-ua-platform")
-      .and_then(|v| v.to_str().ok())
-      .unwrap_or(&ua.os.family),
+      .and_then(|v| v.to_str().map(|i| i.replace('"', "")).ok())
+      .unwrap_or(ua.os.family),
     ua.client.family,
     ua.client
       .version
