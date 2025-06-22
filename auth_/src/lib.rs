@@ -96,7 +96,7 @@ pub async fn test(
     .next()
     .unwrap_or_default();
 
-  signInLog(
+  db::signInLog(
     uid,
     ip,
     timezone,
@@ -106,12 +106,12 @@ pub async fn test(
     arch,
     model,
     cpu_num,
-    &gpu,
+    gpu,
     os_v1,
     os_v2,
-    &brand,
-    &os_name,
-    &browser_name,
+    brand,
+    os_name,
+    browser_name,
     browser_ver,
     browser_lang,
   )
