@@ -20,7 +20,7 @@ pub struct BrowserMeta {
   pub os_ver: String,
 }
 
-pub async fn test(
+pub fn test(
   timezone: i8,
   dpi: u8,
   w: u16,
@@ -37,5 +37,5 @@ pub async fn test(
       .and_then(|v| v.to_str().ok())
       .unwrap_or_default(),
   );
-  // dbg!(ua);
+  dbg!((timezone, dpi, w, h, os_ver, arch, cpu_num, gpu));
 }
