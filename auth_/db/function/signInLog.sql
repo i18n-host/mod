@@ -1,4 +1,4 @@
-CREATE FUNCTION `authSignInLog`(p_uid BIGINT UNSIGNED,p_ip VARBINARY(16),p_timezone TINYINT,p_dpi TINYINT UNSIGNED,p_w SMALLINT UNSIGNED,p_h SMALLINT UNSIGNED,p_os_ver VARBINARY(255),p_arch VARBINARY(255),p_model VARBINARY(255),p_cpu_num MEDIUMINT UNSIGNED,p_gpu VARBINARY(255),p_brand VARBINARY(255),p_os_name VARBINARY(255),p_browser_name VARBINARY(255),p_browser_ver INT UNSIGNED,p_browser_lang VARBINARY(255)
+CREATE FUNCTION `authSignInLog`(p_uid BIGINT UNSIGNED,p_ip VARBINARY(16),p_timezone TINYINT,p_dpi TINYINT UNSIGNED,p_w SMALLINT UNSIGNED,p_h SMALLINT UNSIGNED,p_os_ver1 INT UNSIGNED,p_os_ver2 INT UNSIGNED,p_arch VARBINARY(255),p_model VARBINARY(255),p_cpu_num MEDIUMINT UNSIGNED,p_gpu VARBINARY(255),p_brand VARBINARY(255),p_os_name VARBINARY(255),p_browser_name VARBINARY(255),p_browser_ver INT UNSIGNED,p_browser_lang VARBINARY(255)
 ) RETURNS BIGINT UNSIGNED
     MODIFIES SQL DATA
 BEGIN
@@ -13,8 +13,11 @@ BEGIN
     IF v_model_id IS NULL THEN INSERT INTO authModel (v) VALUES (p_model); SET v_model_id = LAST_INSERT_ID(); END IF;
     SELECT id INTO v_os_name_id FROM authOsName WHERE v = p_os_name;
     IF v_os_name_id IS NULL THEN INSERT INTO authOsName (v) VALUES (p_os_name); SET v_os_name_id = LAST_INSERT_ID(); END IF;
-    SELECT id INTO v_os_ver_id FROM authOsVer WHERE v = p_os_ver;
-    IF v_os_ver_id IS NULL THEN INSERT INTO authOsVer (v) VALUES (p_os_ver); SET v_os_ver_id = LAST_INSERT_ID(); END IF;
+    SELECT id INTO v_os_ver_id FROM authOsVer WHERE v1 = p_os_ver1 AND v2 = p_os_ver2;
+    IF v_os_ver_id IS NULL THEN
+        INSERT INTO authOsVer (v1,v2) VALUES (p_os_ver1,p_os_ver2);
+        SET v_os_ver_id = LAST_INSERT_ID();
+    END IF;
     SELECT id INTO v_browser_name_id FROM authBrowserName WHERE v = p_browser_name;
     IF v_browser_name_id IS NULL THEN INSERT INTO authBrowserName (v) VALUES (p_browser_name); SET v_browser_name_id = LAST_INSERT_ID(); END IF;
     SELECT id INTO v_browser_ver_id FROM authBrowserVer WHERE v = p_browser_ver;
