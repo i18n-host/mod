@@ -34,6 +34,7 @@ pub async fn test(
   os_v2: u32,
   headers: &http::HeaderMap,
 ) -> aok::Void {
+  let uid = 12344;
   use std::net::{IpAddr, Ipv4Addr, Ipv6Addr};
   let ua = UA.parse(
     headers
@@ -41,8 +42,6 @@ pub async fn test(
       .and_then(|v| v.to_str().ok())
       .unwrap_or_default(),
   );
-
-  let uid = 12344;
 
   let ip: Vec<u8> = x_read_ip::get(headers);
 
