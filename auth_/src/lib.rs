@@ -78,7 +78,7 @@ pub fn test(
     },
     arch,
     cpu_num,
-    gpu,
+    gpu.replace(", Unspecified Version", ""),
     ua.os.family,
     ua.client.family,
     ua.client
