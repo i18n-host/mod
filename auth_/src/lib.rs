@@ -66,8 +66,8 @@ pub fn test(
 
   let ip = x_read_ip::get(headers);
 
+  dbg!(ip);
   dbg!((
-    ip,
     timezone,
     dpi,
     w,
