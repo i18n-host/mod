@@ -78,7 +78,7 @@ pub fn test(
       os_ver.into()
     },
     arch,
-    // model,
+    model,
     cpu_num,
     gpu.replace(", Unspecified Version", ""),
     headers
