@@ -42,11 +42,12 @@ pub fn test(
   dpi: u8,
   w: u16,
   h: u16,
-  os_ver: &str,
   arch: &str,
   model: &str,
   cpu_num: u32,
   gpu: &str,
+  os_v1: u32,
+  os_v2: u32,
   headers: &http::HeaderMap,
 ) {
   use std::net::{IpAddr, Ipv4Addr, Ipv6Addr};
@@ -67,17 +68,30 @@ pub fn test(
 
   let ip = x_read_ip::get(headers);
 
-  dbg!(model, ip);
+  let (os_v1, os_v2) = if os_v1 == 0 && os_v2 == 0 {
+    let os_ver = ua.os.version.unwrap_or_default();
+    let mut iter = os_ver.split(".");
+    (
+      iter
+        .next()
+        .unwrap_or_default()
+        .parse::<u32>()
+        .unwrap_or_default(),
+      iter
+        .next()
+        .unwrap_or_default()
+        .parse::<u32>()
+        .unwrap_or_default(),
+    )
+  } else {
+    (os_v1, os_v2)
+  };
+  dbg!(model, ip, os_v1, os_v2);
   dbg!((
     timezone,
     dpi,
     w,
     h,
-    if os_ver.is_empty() {
-      ua.os.version.unwrap_or_default()
-    } else {
-      os_ver.into()
-    },
     arch,
     cpu_num,
     gpu.replace(", Unspecified Version", ""),
