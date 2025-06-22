@@ -18,7 +18,6 @@ v的类型为 varbinary(255) , 并且唯一
 
 
 修改下面表，浏览器版本的v改为数值，类型为INT UNSIGNED NOT NULL，调用函数的参数也对应修改。
-
 DROP DATABASE IF EXISTS dev;
 
 CREATE DATABASE dev CHARACTER SET binary;
@@ -48,6 +47,13 @@ CREATE TABLE authArch (
     UNIQUE KEY uq_v (v)
 );
 
+CREATE TABLE authModel (
+    id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    v VARBINARY(255) NOT NULL,
+    PRIMARY KEY (id),
+    UNIQUE KEY uq_v (v)
+);
+
 CREATE TABLE authOsName (
     id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
     v VARBINARY(255) NOT NULL,
@@ -57,9 +63,10 @@ CREATE TABLE authOsName (
 
 CREATE TABLE authOsVer (
     id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
-    v VARBINARY(255) NOT NULL,
+    v1 INT UNSIGNED NOT NULL, -- 主版本号
+    v2 INT UNSIGNED NOT NULL, -- 副版本号
     PRIMARY KEY (id),
-    UNIQUE KEY uq_v (v)
+    UNIQUE KEY uq_v (v1, v2)
 );
 
 CREATE TABLE authBrowserName (
@@ -71,7 +78,7 @@ CREATE TABLE authBrowserName (
 
 CREATE TABLE authBrowserVer (
     id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
-    v VARBINARY(255) NOT NULL,
+    v INT UNSIGNED NOT NULL,
     PRIMARY KEY (id),
     UNIQUE KEY uq_v (v)
 );
@@ -103,14 +110,15 @@ CREATE TABLE authBrowser (
 CREATE TABLE authDevice (
     id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
     brand_id BIGINT UNSIGNED NOT NULL,
+    model_id BIGINT UNSIGNED NOT NULL,
     arch_id BIGINT UNSIGNED NOT NULL,
     gpu_id BIGINT UNSIGNED NOT NULL,
-    cpu_num MEDIUMINT UNSIGNED NOT NULL COMMENT 'CPU核心数',
-    w SMALLINT UNSIGNED NOT NULL COMMENT '分辨率宽',
-    h SMALLINT UNSIGNED NOT NULL COMMENT '分辨率高',
+    cpu_num MEDIUMINT UNSIGNED NOT NULL,
+    w SMALLINT UNSIGNED NOT NULL,
+    h SMALLINT UNSIGNED NOT NULL,
     dpi TINYINT UNSIGNED NOT NULL,
     PRIMARY KEY (id),
-    UNIQUE KEY uq_hardware (brand_id, arch_id, gpu_id, cpu_num, w, h, dpi)
+    UNIQUE KEY uq_hardware (brand_id, model_id, arch_id, gpu_id, cpu_num, w, h, dpi)
 );
 
 CREATE TABLE authSignInLog (
@@ -120,7 +128,7 @@ CREATE TABLE authSignInLog (
   device_id BIGINT UNSIGNED NOT NULL,
   browser_id BIGINT UNSIGNED NOT NULL,
   os_id BIGINT UNSIGNED NOT NULL,
-  timezone TINYINT NOT NULL COMMENT '时区, 来自JS: new Date().getTimezoneOffset() / 10',
+  timezone TINYINT NOT NULL,
   ts BIGINT UNSIGNED NOT NULL DEFAULT UNIX_TIMESTAMP(),
   PRIMARY KEY (id)
 );
@@ -134,20 +142,22 @@ CREATE FUNCTION `authSignInLog`(
     p_dpi TINYINT UNSIGNED,
     p_w SMALLINT UNSIGNED,
     p_h SMALLINT UNSIGNED,
-    p_os_ver VARBINARY(255),
+    p_os_ver1 INT UNSIGNED,
+    p_os_ver2 INT UNSIGNED,
     p_arch VARBINARY(255),
+    p_model VARBINARY(255),
     p_cpu_num MEDIUMINT UNSIGNED,
     p_gpu VARBINARY(255),
     p_brand VARBINARY(255),
     p_os_name VARBINARY(255),
     p_browser_name VARBINARY(255),
-    p_browser_ver VARBINARY(255),
+    p_browser_ver INT UNSIGNED,
     p_browser_lang VARBINARY(255)
 )
 RETURNS BIGINT UNSIGNED
 MODIFIES SQL DATA
 BEGIN
-    DECLARE v_brand_id, v_gpu_id, v_arch_id, v_os_name_id, v_os_ver_id, v_browser_name_id, v_browser_ver_id, v_browser_lang_id, v_os_id, v_browser_id, v_device_id, v_log_id BIGINT UNSIGNED;
+    DECLARE v_brand_id, v_gpu_id, v_arch_id, v_model_id, v_os_name_id, v_os_ver_id, v_browser_name_id, v_browser_ver_id, v_browser_lang_id, v_os_id, v_browser_id, v_device_id, v_log_id BIGINT UNSIGNED;
 
     SELECT id INTO v_brand_id FROM authBrand WHERE v = p_brand;
     IF v_brand_id IS NULL THEN INSERT INTO authBrand (v) VALUES (p_brand); SET v_brand_id = LAST_INSERT_ID(); END IF;
@@ -158,11 +168,17 @@ BEGIN
     SELECT id INTO v_arch_id FROM authArch WHERE v = p_arch;
     IF v_arch_id IS NULL THEN INSERT INTO authArch (v) VALUES (p_arch); SET v_arch_id = LAST_INSERT_ID(); END IF;
 
+    SELECT id INTO v_model_id FROM authModel WHERE v = p_model;
+    IF v_model_id IS NULL THEN INSERT INTO authModel (v) VALUES (p_model); SET v_model_id = LAST_INSERT_ID(); END IF;
+
     SELECT id INTO v_os_name_id FROM authOsName WHERE v = p_os_name;
     IF v_os_name_id IS NULL THEN INSERT INTO authOsName (v) VALUES (p_os_name); SET v_os_name_id = LAST_INSERT_ID(); END IF;
 
-    SELECT id INTO v_os_ver_id FROM authOsVer WHERE v = p_os_ver;
-    IF v_os_ver_id IS NULL THEN INSERT INTO authOsVer (v) VALUES (p_os_ver); SET v_os_ver_id = LAST_INSERT_ID(); END IF;
+    SELECT id INTO v_os_ver_id FROM authOsVer WHERE v1 = p_os_ver1 AND v2 = p_os_ver2;
+    IF v_os_ver_id IS NULL THEN
+        INSERT INTO authOsVer (v1, v2) VALUES (p_os_ver1, p_os_ver2);
+        SET v_os_ver_id = LAST_INSERT_ID();
+    END IF;
 
     SELECT id INTO v_browser_name_id FROM authBrowserName WHERE v = p_browser_name;
     IF v_browser_name_id IS NULL THEN INSERT INTO authBrowserName (v) VALUES (p_browser_name); SET v_browser_name_id = LAST_INSERT_ID(); END IF;
@@ -179,9 +195,9 @@ BEGIN
     SELECT id INTO v_browser_id FROM authBrowser WHERE name_id = v_browser_name_id AND lang_id = v_browser_lang_id AND ver_id = v_browser_ver_id;
     IF v_browser_id IS NULL THEN INSERT INTO authBrowser (name_id, lang_id, ver_id) VALUES (v_browser_name_id, v_browser_lang_id, v_browser_ver_id); SET v_browser_id = LAST_INSERT_ID(); END IF;
 
-    SELECT id INTO v_device_id FROM authDevice WHERE brand_id = v_brand_id AND arch_id = v_arch_id AND gpu_id = v_gpu_id AND cpu_num = p_cpu_num AND w = p_w AND h = p_h AND dpi = p_dpi;
+    SELECT id INTO v_device_id FROM authDevice WHERE brand_id = v_brand_id AND model_id = v_model_id AND arch_id = v_arch_id AND gpu_id = v_gpu_id AND cpu_num = p_cpu_num AND w = p_w AND h = p_h AND dpi = p_dpi;
     IF v_device_id IS NULL THEN
-        INSERT INTO authDevice (brand_id, arch_id, gpu_id, cpu_num, w, h, dpi) VALUES (v_brand_id, v_arch_id, v_gpu_id, p_cpu_num, p_w, p_h, p_dpi);
+        INSERT INTO authDevice (brand_id, model_id, arch_id, gpu_id, cpu_num, w, h, dpi) VALUES (v_brand_id, v_model_id, v_arch_id, v_gpu_id, p_cpu_num, p_w, p_h, p_dpi);
         SET v_device_id = LAST_INSERT_ID();
     END IF;
 
@@ -193,20 +209,23 @@ END$$
 
 DELIMITER ;
 
+-- 调用 authSignInLog 函数记录一次登录
 SELECT authSignInLog(
-    1001,                           -- p_uid
-    INET6_ATON('198.51.100.10'),    -- p_ip
-    -48,                            -- p_timezone
-    20,                             -- p_dpi
-    1920,                           -- p_w
-    1080,                           -- p_h
-    '10.0',                         -- p_os_ver
-    'x86_64',                       -- p_arch
-    10,                             -- p_cpu_num
-    'NVIDIA GeForce RTX 3080',      -- p_gpu
-    'Dell',                         -- p_brand
-    'Windows',                      -- p_os_name
-    'Chrome',                       -- p_browser_name
-    '108.0.0.0',                    -- p_browser_ver
-    'en-US'                         -- p_browser_lang
+    1001,                           -- p_uid: 用户ID
+    INET6_ATON('198.51.100.10'),    -- p_ip: 登录IP地址
+    -48,                            -- p_timezone: 时区 (UTC+8 => 8 * 6 = 48, -48表示UTC-8)
+    20,                             -- p_dpi: 屏幕DPI
+    1920,                           -- p_w: 屏幕宽度
+    1080,                           -- p_h: 屏幕高度
+    10,                             -- p_os_ver1: 操作系统主版本号
+    0,                              -- p_os_ver2: 操作系统副版本号
+    'x86_64',                       -- p_arch: CPU架构
+    'XPS 15 9520',                  -- p_model: 设备型号
+    10,                             -- p_cpu_num: CPU核心数
+    'NVIDIA GeForce RTX 3080',      -- p_gpu: GPU型号
+    'Dell',                         -- p_brand: 设备品牌
+    'Windows',                      -- p_os_name: 操作系统名称
+    'Chrome',                       -- p_browser_name: 浏览器名称
+    108,                            -- p_browser_ver: 浏览器主版本号
+    'en-US'                         -- p_browser_lang: 浏览器语言
 );
