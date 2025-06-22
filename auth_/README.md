@@ -16,8 +16,6 @@ v的类型为 varbinary(255) , 并且唯一
 实现方法: 严格遵循 SELECT ... INTO a_variable; IF a_variable IS NULL THEN INSERT ...; SET a_variable = LAST_INSERT_ID(); END IF; 的逻辑模式。禁止使用 INSERT ... ON DUPLICATE KEY UPDATE 或 DECLARE HANDLER。
 ---
 
-
-
 DROP DATABASE IF EXISTS dev;
 
 CREATE DATABASE dev CHARACTER SET binary;
@@ -25,13 +23,6 @@ CREATE DATABASE dev CHARACTER SET binary;
 USE dev;
 
 SET SESSION default_storage_engine = rocksdb;
-
-CREATE TABLE authBrand (
-    id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
-    v VARBINARY(255) NOT NULL,
-    PRIMARY KEY (id),
-    UNIQUE KEY uq_v (v)
-);
 
 CREATE TABLE authGpu (
     id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -109,7 +100,6 @@ CREATE TABLE authBrowser (
 
 CREATE TABLE authDevice (
     id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
-    brand_id BIGINT UNSIGNED NOT NULL,
     model_id BIGINT UNSIGNED NOT NULL,
     arch_id BIGINT UNSIGNED NOT NULL,
     gpu_id BIGINT UNSIGNED NOT NULL,
@@ -118,7 +108,7 @@ CREATE TABLE authDevice (
     h SMALLINT UNSIGNED NOT NULL,
     dpi TINYINT UNSIGNED NOT NULL,
     PRIMARY KEY (id),
-    UNIQUE KEY uq_hardware (brand_id, model_id, arch_id, gpu_id, cpu_num, w, h, dpi)
+    UNIQUE KEY uq_hardware (model_id, arch_id, gpu_id, cpu_num, w, h, dpi)
 );
 
 CREATE TABLE authSignInLog (
@@ -148,7 +138,6 @@ CREATE FUNCTION `authSignInLog`(
     p_gpu VARBINARY(255),
     p_os_v1 INT UNSIGNED,
     p_os_v2 INT UNSIGNED,
-    p_brand VARBINARY(255),
     p_os_name VARBINARY(255),
     p_browser_name VARBINARY(255),
     p_browser_ver INT UNSIGNED,
@@ -157,10 +146,7 @@ CREATE FUNCTION `authSignInLog`(
 RETURNS BIGINT UNSIGNED
 MODIFIES SQL DATA
 BEGIN
-    DECLARE v_brand_id, v_gpu_id, v_arch_id, v_model_id, v_os_name_id, v_os_ver_id, v_browser_name_id, v_browser_ver_id, v_browser_lang_id, v_os_id, v_browser_id, v_device_id, v_log_id BIGINT UNSIGNED;
-
-    SELECT id INTO v_brand_id FROM authBrand WHERE v = p_brand;
-    IF v_brand_id IS NULL THEN INSERT INTO authBrand (v) VALUES (p_brand); SET v_brand_id = LAST_INSERT_ID(); END IF;
+    DECLARE v_gpu_id, v_arch_id, v_model_id, v_os_name_id, v_os_ver_id, v_browser_name_id, v_browser_ver_id, v_browser_lang_id, v_os_id, v_browser_id, v_device_id, v_log_id BIGINT UNSIGNED;
 
     SELECT id INTO v_gpu_id FROM authGpu WHERE v = p_gpu;
     IF v_gpu_id IS NULL THEN INSERT INTO authGpu (v) VALUES (p_gpu); SET v_gpu_id = LAST_INSERT_ID(); END IF;
@@ -195,9 +181,9 @@ BEGIN
     SELECT id INTO v_browser_id FROM authBrowser WHERE name_id = v_browser_name_id AND lang_id = v_browser_lang_id AND ver_id = v_browser_ver_id;
     IF v_browser_id IS NULL THEN INSERT INTO authBrowser (name_id, lang_id, ver_id) VALUES (v_browser_name_id, v_browser_lang_id, v_browser_ver_id); SET v_browser_id = LAST_INSERT_ID(); END IF;
 
-    SELECT id INTO v_device_id FROM authDevice WHERE brand_id = v_brand_id AND model_id = v_model_id AND arch_id = v_arch_id AND gpu_id = v_gpu_id AND cpu_num = p_cpu_num AND w = p_w AND h = p_h AND dpi = p_dpi;
+    SELECT id INTO v_device_id FROM authDevice WHERE model_id = v_model_id AND arch_id = v_arch_id AND gpu_id = v_gpu_id AND cpu_num = p_cpu_num AND w = p_w AND h = p_h AND dpi = p_dpi;
     IF v_device_id IS NULL THEN
-        INSERT INTO authDevice (brand_id, model_id, arch_id, gpu_id, cpu_num, w, h, dpi) VALUES (v_brand_id, v_model_id, v_arch_id, v_gpu_id, p_cpu_num, p_w, p_h, p_dpi);
+        INSERT INTO authDevice (model_id, arch_id, gpu_id, cpu_num, w, h, dpi) VALUES (v_model_id, v_arch_id, v_gpu_id, p_cpu_num, p_w, p_h, p_dpi);
         SET v_device_id = LAST_INSERT_ID();
     END IF;
 
@@ -223,7 +209,6 @@ SELECT authSignInLog(
     'NVIDIA GeForce RTX 3080',      -- p_gpu: GPU型号
     10,                             -- p_os_v1: 操作系统主版本号
     0,                              -- p_os_v2: 操作系统副版本号
-    'Dell',                         -- p_brand: 设备品牌
     'Windows',                      -- p_os_name: 操作系统名称
     'Chrome',                       -- p_browser_name: 浏览器名称
     108,                            -- p_browser_ver: 浏览器主版本号
