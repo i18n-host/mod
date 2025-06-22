@@ -20,7 +20,7 @@ pub struct BrowserMeta {
   pub os_ver: String,
 }
 
-pub fn test(
+pub async fn test(
   timezone: i8,
   dpi: u8,
   w: u16,
