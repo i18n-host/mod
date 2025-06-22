@@ -17,7 +17,6 @@ v的类型为 varbinary(255) , 并且唯一
 ---
 
 
-修改下面表，浏览器版本的v改为数值，类型为INT UNSIGNED NOT NULL，调用函数的参数也对应修改。
 
 DROP DATABASE IF EXISTS dev;
 

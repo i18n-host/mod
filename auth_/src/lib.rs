@@ -21,23 +21,7 @@ pub struct BrowserMeta {
 #[static_init::dynamic]
 pub static UA: UserAgentParser = UserAgentParser::new();
 
-// uid: u64,
-// ip: impl AsRef<[u8]>,
-// timezone: i8,
-// dpi: u8,
-// w: u16,
-// h: u16,
-// os_ver: impl AsRef<str>,
-// arch: impl AsRef<str>,
-// cpu_num: u32,
-// gpu: impl AsRef<str>,
-// brand: impl AsRef<str>,
-// os_name: impl AsRef<str>,
-// browser_name: impl AsRef<str>,
-// browser_ver: impl AsRef<str>,
-// browser_lang: impl AsRef<str>,
-
-pub fn test(
+pub async fn test(
   timezone: i8,
   dpi: u8,
   w: u16,
@@ -58,19 +42,13 @@ pub fn test(
       .unwrap_or_default(),
   );
 
-  let browser_lang = headers
-    .get("accept-language")
-    .and_then(|v| v.to_str().ok())
-    .unwrap_or_default()
-    .split(",")
-    .next()
-    .unwrap_or_default();
+  let uid = 12344;
 
-  let ip = x_read_ip::get(headers);
+  let ip: Vec<u8> = x_read_ip::get(headers);
 
   let (os_v1, os_v2) = if os_v1 == 0 && os_v2 == 0 {
-    let os_ver = ua.os.version.unwrap_or_default();
-    let mut iter = os_ver.split(".");
+    let os_ver = ua.os.version.as_deref().unwrap_or_default();
+    let mut iter = os_ver.split('.');
     (
       iter
         .next()
@@ -86,28 +64,56 @@ pub fn test(
   } else {
     (os_v1, os_v2)
   };
-  dbg!(model, ip, os_v1, os_v2);
-  dbg!((
+
+  let gpu: String = gpu.replace(", Unspecified Version", "");
+
+  let brand: String = ua.device.brand.as_deref().unwrap_or_default().to_string();
+
+  let os_name: String = headers
+    .get("sec-ch-ua-platform")
+    .and_then(|v| v.to_str().ok())
+    .map(|s| s.replace('"', ""))
+    .unwrap_or_else(|| ua.os.family.to_string());
+
+  let browser_name: String = ua.client.family.to_string();
+
+  let browser_ver: u32 = ua
+    .client
+    .version
+    .as_deref()
+    .unwrap_or_default()
+    .split('.')
+    .next()
+    .unwrap_or_default()
+    .parse::<u32>()
+    .unwrap_or_default();
+
+  let browser_lang: &str = headers
+    .get("accept-language")
+    .and_then(|v| v.to_str().ok())
+    .unwrap_or_default()
+    .split(',')
+    .next()
+    .unwrap_or_default();
+
+  signInLog(
+    uid,
+    ip,
     timezone,
     dpi,
     w,
     h,
     arch,
+    model,
     cpu_num,
-    gpu.replace(", Unspecified Version", ""),
-    headers
-      .get("sec-ch-ua-platform")
-      .and_then(|v| v.to_str().map(|i| i.replace('"', "")).ok())
-      .unwrap_or(ua.os.family),
-    ua.client.family,
-    ua.client
-      .version
-      .unwrap_or_default()
-      .split(".")
-      .next()
-      .unwrap_or_default()
-      .parse::<u32>()
-      .unwrap_or_default(),
+    &gpu,
+    os_v1,
+    os_v2,
+    &brand,
+    &os_name,
+    &browser_name,
+    browser_ver,
     browser_lang,
-  ));
+  )
+  .await
 }
