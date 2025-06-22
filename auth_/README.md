@@ -18,6 +18,7 @@ v的类型为 varbinary(255) , 并且唯一
 
 
 修改下面表，浏览器版本的v改为数值，类型为INT UNSIGNED NOT NULL，调用函数的参数也对应修改。
+
 DROP DATABASE IF EXISTS dev;
 
 CREATE DATABASE dev CHARACTER SET binary;
@@ -142,12 +143,12 @@ CREATE FUNCTION `authSignInLog`(
     p_dpi TINYINT UNSIGNED,
     p_w SMALLINT UNSIGNED,
     p_h SMALLINT UNSIGNED,
-    p_os_ver1 INT UNSIGNED,
-    p_os_ver2 INT UNSIGNED,
     p_arch VARBINARY(255),
     p_model VARBINARY(255),
     p_cpu_num MEDIUMINT UNSIGNED,
     p_gpu VARBINARY(255),
+    p_os_v1 INT UNSIGNED,
+    p_os_v2 INT UNSIGNED,
     p_brand VARBINARY(255),
     p_os_name VARBINARY(255),
     p_browser_name VARBINARY(255),
@@ -174,9 +175,9 @@ BEGIN
     SELECT id INTO v_os_name_id FROM authOsName WHERE v = p_os_name;
     IF v_os_name_id IS NULL THEN INSERT INTO authOsName (v) VALUES (p_os_name); SET v_os_name_id = LAST_INSERT_ID(); END IF;
 
-    SELECT id INTO v_os_ver_id FROM authOsVer WHERE v1 = p_os_ver1 AND v2 = p_os_ver2;
+    SELECT id INTO v_os_ver_id FROM authOsVer WHERE v1 = p_os_v1 AND v2 = p_os_v2;
     IF v_os_ver_id IS NULL THEN
-        INSERT INTO authOsVer (v1, v2) VALUES (p_os_ver1, p_os_ver2);
+        INSERT INTO authOsVer (v1, v2) VALUES (p_os_v1, p_os_v2);
         SET v_os_ver_id = LAST_INSERT_ID();
     END IF;
 
@@ -217,12 +218,12 @@ SELECT authSignInLog(
     20,                             -- p_dpi: 屏幕DPI
     1920,                           -- p_w: 屏幕宽度
     1080,                           -- p_h: 屏幕高度
-    10,                             -- p_os_ver1: 操作系统主版本号
-    0,                              -- p_os_ver2: 操作系统副版本号
     'x86_64',                       -- p_arch: CPU架构
     'XPS 15 9520',                  -- p_model: 设备型号
     10,                             -- p_cpu_num: CPU核心数
     'NVIDIA GeForce RTX 3080',      -- p_gpu: GPU型号
+    10,                             -- p_os_v1: 操作系统主版本号
+    0,                              -- p_os_v2: 操作系统副版本号
     'Dell',                         -- p_brand: 设备品牌
     'Windows',                      -- p_os_name: 操作系统名称
     'Chrome',                       -- p_browser_name: 浏览器名称
