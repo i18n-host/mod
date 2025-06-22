@@ -67,6 +67,7 @@ pub fn test(
 
   let ip = x_read_ip::get(headers);
 
+  dbg!(model, ip);
   dbg!((
     timezone,
     dpi,
@@ -78,7 +79,6 @@ pub fn test(
       os_ver.into()
     },
     arch,
-    model,
     cpu_num,
     gpu.replace(", Unspecified Version", ""),
     headers
