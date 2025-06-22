@@ -5,6 +5,8 @@ pub mod err;
 pub mod signin;
 pub mod signup;
 
+use std::os;
+
 use serde::{Deserialize, Serialize};
 use simple_useragent::UserAgentParser;
 
@@ -57,7 +59,6 @@ pub fn test(
   dbg!(ua.client.family);
   dbg!(ua.client.version);
   dbg!(ua.os.family);
-  dbg!(ua.os.version);
 
   let browser_lang = headers
     .get("accept-language")
@@ -72,7 +73,11 @@ pub fn test(
     dpi,
     w,
     h,
-    os_ver,
+    if os_ver.is_empty() {
+      ua.os.version.unwrap_or_default()
+    } else {
+      os_ver.into()
+    },
     arch,
     cpu_num,
     gpu,
