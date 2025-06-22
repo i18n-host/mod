@@ -78,8 +78,8 @@ pub fn test(
     cpu_num,
     gpu,
     ua.os.family.unwrap_or_default(),
-    browser_lang
+    ua.client.family.unwrap_or_default(),
+    browser_lang,
+    ua.client.version.unwrap_or_default(),
   ));
-  dbg!(ua.client.family);
-  dbg!(ua.client.version);
 }
