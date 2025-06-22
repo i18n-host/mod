@@ -12,8 +12,12 @@ v的类型为 varbinary(255) , 并且唯一
 2. 创建函数
 
 代码风格:SQL代码应尽量紧凑，减少不必要的换行。无注释
+函数参数名称都用p_开头。
 实现方法: 严格遵循 SELECT ... INTO a_variable; IF a_variable IS NULL THEN INSERT ...; SET a_variable = LAST_INSERT_ID(); END IF; 的逻辑模式。禁止使用 INSERT ... ON DUPLICATE KEY UPDATE 或 DECLARE HANDLER。
 ---
+
+
+修改下面表，浏览器版本的v改为数值，类型为INT UNSIGNED NOT NULL，调用函数的参数也对应修改。
 
 DROP DATABASE IF EXISTS dev;
 

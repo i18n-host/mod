@@ -79,7 +79,14 @@ pub fn test(
     gpu,
     ua.os.family,
     ua.client.family,
-    ua.client.version.unwrap_or_default(),
+    ua.client
+      .version
+      .unwrap_or_default()
+      .split(".")
+      .next()
+      .unwrap_or_default()
+      .parse::<u32>()
+      .unwrap_or_default(),
     browser_lang,
   ));
 }
