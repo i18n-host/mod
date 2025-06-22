@@ -79,7 +79,10 @@ pub fn test(
     arch,
     cpu_num,
     gpu.replace(", Unspecified Version", ""),
-    ua.os.family,
+    headers
+      .get("sec-ch-ua-platform")
+      .and_then(|v| v.to_str().ok())
+      .unwrap_or(&ua.os.family),
     ua.client.family,
     ua.client
       .version
