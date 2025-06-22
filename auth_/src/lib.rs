@@ -77,9 +77,9 @@ pub fn test(
     arch,
     cpu_num,
     gpu,
-    ua.os.family.unwrap_or_default(),
-    ua.client.family.unwrap_or_default(),
-    browser_lang,
+    ua.os.family,
+    ua.client.family,
     ua.client.version.unwrap_or_default(),
+    browser_lang,
   ));
 }
