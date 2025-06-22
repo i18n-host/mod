@@ -11,6 +11,7 @@ pub async fn signInLog(
   h: u16,
   os_ver: impl AsRef<str>,
   arch: impl AsRef<str>,
+  model: impl AsRef<str>,
   cpu_num: u32,
   gpu: impl AsRef<str>,
   brand: impl AsRef<str>,
@@ -20,13 +21,14 @@ pub async fn signInLog(
   browser_lang: impl AsRef<str>,
 ) -> Result<u64> {
   let sql = format!(
-    "SELECT signInLog({uid},?,{timezone},{dpi},{w},{h},?,?,{cpu_num},?,?,?,?,{browser_ver},?)"
+    "SELECT signInLog({uid},?,{timezone},{dpi},{w},{h},?,?,?,{cpu_num},?,?,?,?,{browser_ver},?)"
   );
   Ok(q1!(
     sql,
     ip.as_ref(),
     os_ver.as_ref(),
     arch.as_ref(),
+    model.as_ref(),
     gpu.as_ref(),
     brand.as_ref(),
     os_name.as_ref(),
@@ -37,7 +39,7 @@ pub async fn signInLog(
 
 #[macro_export]
 macro_rules! signInLog {
-  ($uid:expr,$ip:expr,$timezone:expr,$dpi:expr,$w:expr,$h:expr,$os_ver:expr,$arch:expr,$cpu_num:expr,$gpu:expr,$brand:expr,$os_name:expr,$browser_name:expr,$browser_ver:expr,$browser_lang:expr) => {
+  ($uid:expr,$ip:expr,$timezone:expr,$dpi:expr,$w:expr,$h:expr,$os_ver:expr,$arch:expr,$model:expr,$cpu_num:expr,$gpu:expr,$brand:expr,$os_name:expr,$browser_name:expr,$browser_ver:expr,$browser_lang:expr) => {
     $crate::signInLog(
       $uid,
       $ip,
@@ -47,6 +49,7 @@ macro_rules! signInLog {
       $h,
       $os_ver,
       $arch,
+      $model,
       $cpu_num,
       $gpu,
       $brand,
