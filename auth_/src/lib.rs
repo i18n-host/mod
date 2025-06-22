@@ -56,10 +56,6 @@ pub fn test(
       .unwrap_or_default(),
   );
 
-  dbg!(ua.client.family);
-  dbg!(ua.client.version);
-  dbg!(ua.os.family);
-
   let browser_lang = headers
     .get("accept-language")
     .and_then(|v| v.to_str().ok())
@@ -81,6 +77,9 @@ pub fn test(
     arch,
     cpu_num,
     gpu,
+    ua.os.family.unwrap_or_default(),
     browser_lang
   ));
+  dbg!(ua.client.family);
+  dbg!(ua.client.version);
 }
