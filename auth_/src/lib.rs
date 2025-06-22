@@ -69,6 +69,7 @@ pub fn test(
     .and_then(|v| v.to_str().ok())
     .and_then(|value: &str| value.split(',').next().map(str::trim))
     .and_then(|v| v.parse::<IpAddr>().ok())
+    .and_then(|v| v.octets().to_vec())
     .unwrap_or_default();
 
   dbg!((
