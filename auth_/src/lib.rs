@@ -44,6 +44,7 @@ pub fn test(
   h: u16,
   os_ver: &str,
   arch: &str,
+  model: &str,
   cpu_num: u32,
   gpu: &str,
   headers: &http::HeaderMap,
@@ -77,6 +78,7 @@ pub fn test(
       os_ver.into()
     },
     arch,
+    // model,
     cpu_num,
     gpu.replace(", Unspecified Version", ""),
     headers
