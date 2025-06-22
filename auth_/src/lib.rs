@@ -48,7 +48,7 @@ pub fn test(
   gpu: &str,
   headers: &http::HeaderMap,
 ) {
-  use std::net::IpAddr;
+  use std::net::{IpAddr, Ipv4Addr, Ipv6Addr};
   let ua = UA.parse(
     headers
       .get("user-agent")
@@ -64,13 +64,7 @@ pub fn test(
     .next()
     .unwrap_or_default();
 
-  let ip = headers
-    .get("x-forwarded-for")
-    .and_then(|v| v.to_str().ok())
-    .and_then(|value: &str| value.split(',').next().map(str::trim))
-    .and_then(|v| v.parse::<IpAddr>().ok())
-    .and_then(|v| v.octets().to_vec())
-    .unwrap_or_default();
+  let ip = x_read_ip::get(&headers);
 
   dbg!((
     ip,
