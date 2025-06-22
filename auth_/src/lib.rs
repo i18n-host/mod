@@ -56,6 +56,8 @@ pub fn test(
 
   dbg!(ua.client.family);
   dbg!(ua.client.version);
+  dbg!(ua.os.family);
+  dbg!(ua.os.version);
 
   let browser_lang = headers
     .get("accept-language")
