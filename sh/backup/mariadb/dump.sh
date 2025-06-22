@@ -2,8 +2,9 @@
 
 DIR=$(realpath $0) && DIR=${DIR%/*}
 cd $DIR
+ROOT=$(realpath $DIR/../../..)
 set -a
-. ../../../../srv/conf/mariadb.env
+. $ROOT/../srv/conf/mariadb.env
 set +a
 set -xe
 
@@ -43,3 +44,6 @@ if [ ! -d "node_modules" ]; then
   bun i
 fi
 mise exec -- ./dump.coffee /tmp/$MYSQL_DB.sql
+
+cd $ROOT
+cargo fmt
