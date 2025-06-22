@@ -3,8 +3,9 @@
 DIR=$(realpath $0) && DIR=${DIR%/*}
 cd $DIR
 ROOT=$(realpath $DIR/../../..)
+SRV=$(realpath $ROOT/../srv)
 set -a
-. $ROOT/../srv/conf/mariadb.env
+. $SRV/conf/mariadb.env
 set +a
 set -xe
 
