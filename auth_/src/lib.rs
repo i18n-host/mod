@@ -33,7 +33,7 @@ pub async fn test(
   os_v1: u32,
   os_v2: u32,
   headers: &http::HeaderMap,
-) {
+) -> aok::Void {
   use std::net::{IpAddr, Ipv4Addr, Ipv6Addr};
   let ua = UA.parse(
     headers
@@ -66,8 +66,6 @@ pub async fn test(
   };
 
   let gpu: String = gpu.replace(", Unspecified Version", "");
-
-  let brand: String = ua.device.brand.as_deref().unwrap_or_default().to_string();
 
   let os_name: String = headers
     .get("sec-ch-ua-platform")
@@ -109,11 +107,11 @@ pub async fn test(
     gpu,
     os_v1,
     os_v2,
-    brand,
     os_name,
     browser_name,
     browser_ver,
     browser_lang,
   )
-  .await
+  .await?;
+  aok::OK
 }
