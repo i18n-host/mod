@@ -1,7 +1,6 @@
 pub(crate) mod db;
-mod r;
-
 pub mod err;
+mod r;
 pub mod signin;
 pub mod signup;
 
@@ -49,6 +48,7 @@ pub fn test(
   gpu: &str,
   headers: &http::HeaderMap,
 ) {
+  use std::net::IpAddr;
   let ua = UA.parse(
     headers
       .get("user-agent")
@@ -64,7 +64,15 @@ pub fn test(
     .next()
     .unwrap_or_default();
 
+  let ip = headers
+    .get("x-forwarded-for")
+    .and_then(|v| v.to_str().ok())
+    .and_then(|value: &str| value.split(',').next().map(str::trim))
+    .and_then(|v| v.parse::<IpAddr>().ok())
+    .unwrap_or_default();
+
   dbg!((
+    ip,
     timezone,
     dpi,
     w,
