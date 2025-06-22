@@ -64,7 +64,7 @@ pub fn test(
     .next()
     .unwrap_or_default();
 
-  let ip = x_read_ip::get(&headers);
+  let ip = x_read_ip::get(headers);
 
   dbg!((
     ip,
