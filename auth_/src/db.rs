@@ -21,7 +21,7 @@ pub async fn signInLog(
   browser_lang: impl AsRef<str>,
 ) -> Result<u64> {
   let sql = format!(
-    "SELECT signInLog({uid},?,{timezone},{dpi},{w},{h},?,?,{cpu_num},?,{os_v1},{os_v2},?,?,{browser_ver},?)"
+    "SELECT authSignInLog({uid},?,{timezone},{dpi},{w},{h},?,?,{cpu_num},?,{os_v1},{os_v2},?,?,{browser_ver},?)"
   );
   Ok(q1!(
     sql,

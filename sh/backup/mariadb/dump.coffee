@@ -44,7 +44,7 @@ genRs = (mod_name, li) =>
         )
       write(
         join dir,'src/db.rs'
-        rust GEN
+        rust mod_name, GEN
       )
       return 1
   return

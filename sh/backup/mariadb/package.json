@@ -3,7 +3,7 @@
   "dependencies": {
     "@3-/dbq": "^0.1.33",
     "@3-/default": "^0.1.9",
-    "@3-/mysql2rust": "^0.1.19",
+    "@3-/mysql2rust": "^0.1.20",
     "@iarna/toml": "^2.2.5",
     "ansis": "^4.1.0",
     "which": "^5.0.0",

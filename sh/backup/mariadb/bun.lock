@@ -5,7 +5,7 @@
       "dependencies": {
         "@3-/dbq": "^0.1.33",
         "@3-/default": "^0.1.9",
-        "@3-/mysql2rust": "^0.1.19",
+        "@3-/mysql2rust": "^0.1.20",
         "@iarna/toml": "^2.2.5",
         "ansis": "^4.1.0",
         "which": "^5.0.0",
@@ -24,7 +24,7 @@
 
     "@3-/log": ["@3-/log@0.1.4", "", {}, "sha512-tt2LD92IS1BYI9vfFsNid6LmmuHA51F3N7N7ho/4vOpuScwOkd/EI8/W015CEoL6ZabOmliQuzSnmMxvTetwhg=="],
 
-    "@3-/mysql2rust": ["@3-/mysql2rust@0.1.19", "", { "dependencies": { "@3-/rm": "^0.1.3" } }, "sha512-7kzaiXhyWtEsW+eMb8mhzI/mqjwiH/M/+NeebCRc9OHBMcWYHTIFzM7+yy2wbHHG/1OAyalOIVgLEZGka9yPCw=="],
+    "@3-/mysql2rust": ["@3-/mysql2rust@0.1.20", "", { "dependencies": { "@3-/rm": "^0.1.3" } }, "sha512-Nw9McvTy1S3EHxABDbvn+8S5kbn/gGjMZnYl2fnM2fluxoRAZdjrFFLmeofHeEzin9DJKgWJiIHd1WBFzsqJiA=="],
 
     "@3-/retry": ["@3-/retry@0.0.1", "", { "dependencies": { "@3-/caller_line": "^0.0.1", "@3-/sleep": "^0.0.3" } }, "sha512-XB/6DNobSb/ZEeWyHqMGyHUHRTOjXCEIXLaWqdojlHJuiScnK7gkXYzuM1bU0t9AFl4ejl/COdo7ekKtyDtPLQ=="],
 
