@@ -21,6 +21,23 @@ pub struct BrowserMeta {
 #[static_init::dynamic]
 pub static UA: UserAgentParser = UserAgentParser::new();
 
+fn ver_tuple<S: AsRef<str>>(v: Option<S>) -> (u32, u32) {
+  let v = v.map(|i| i.as_ref()).unwrap_or_default();
+  let mut iter = v.split('.');
+  (
+    iter
+      .next()
+      .unwrap_or_default()
+      .parse::<u32>()
+      .unwrap_or_default(),
+    iter
+      .next()
+      .unwrap_or_default()
+      .parse::<u32>()
+      .unwrap_or_default(),
+  )
+}
+
 // pub(crate) async fn test(
 pub async fn test(
   timezone: i8,
@@ -47,20 +64,7 @@ pub async fn test(
   let ip: Vec<u8> = x_read_ip::get(headers);
 
   let (os_v1, os_v2) = if os_v1 == 0 && os_v2 == 0 {
-    let os_ver = ua.os.version.as_deref().unwrap_or_default();
-    let mut iter = os_ver.split('.');
-    (
-      iter
-        .next()
-        .unwrap_or_default()
-        .parse::<u32>()
-        .unwrap_or_default(),
-      iter
-        .next()
-        .unwrap_or_default()
-        .parse::<u32>()
-        .unwrap_or_default(),
-    )
+    ver_tuple(ua.os.version)
   } else {
     (os_v1, os_v2)
   };
@@ -75,16 +79,7 @@ pub async fn test(
 
   let browser_name: String = ua.client.family.to_string();
 
-  let browser_ver: u32 = ua
-    .client
-    .version
-    .as_deref()
-    .unwrap_or_default()
-    .split('.')
-    .next()
-    .unwrap_or_default()
-    .parse::<u32>()
-    .unwrap_or_default();
+  let browser_ver: u32 = ver_tuple(ua.client.version);
 
   let browser_lang: &str = headers
     .get("accept-language")

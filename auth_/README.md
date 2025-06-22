@@ -16,6 +16,9 @@ v的类型为 varbinary(255) , 并且唯一
 实现方法: 严格遵循 SELECT ... INTO a_variable; IF a_variable IS NULL THEN INSERT ...; SET a_variable = LAST_INSERT_ID(); END IF; 的逻辑模式。禁止使用 INSERT ... ON DUPLICATE KEY UPDATE 或 DECLARE HANDLER。
 ---
 
+修改下面mariadb表authBrowserVer结构和authOsVer结构一致，然后修改对应的函数参数和调用，输出用```包裹
+
+
 DROP DATABASE IF EXISTS dev;
 
 CREATE DATABASE dev CHARACTER SET binary;
@@ -54,8 +57,8 @@ CREATE TABLE authOsName (
 
 CREATE TABLE authOsVer (
     id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
-    v1 INT UNSIGNED NOT NULL, -- 主版本号
-    v2 INT UNSIGNED NOT NULL, -- 副版本号
+    v1 INT UNSIGNED NOT NULL,
+    v2 INT UNSIGNED NOT NULL,
     PRIMARY KEY (id),
     UNIQUE KEY uq_v (v1, v2)
 );
@@ -69,9 +72,10 @@ CREATE TABLE authBrowserName (
 
 CREATE TABLE authBrowserVer (
     id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
-    v INT UNSIGNED NOT NULL,
+    v1 INT UNSIGNED NOT NULL,
+    v2 INT UNSIGNED NOT NULL,
     PRIMARY KEY (id),
-    UNIQUE KEY uq_v (v)
+    UNIQUE KEY uq_v (v1, v2)
 );
 
 CREATE TABLE authBrowserLang (
@@ -140,7 +144,8 @@ CREATE FUNCTION `authSignInLog`(
     p_os_v2 INT UNSIGNED,
     p_os_name VARBINARY(255),
     p_browser_name VARBINARY(255),
-    p_browser_ver INT UNSIGNED,
+    p_browser_v1 INT UNSIGNED,
+    p_browser_v2 INT UNSIGNED,
     p_browser_lang VARBINARY(255)
 )
 RETURNS BIGINT UNSIGNED
@@ -169,8 +174,11 @@ BEGIN
     SELECT id INTO v_browser_name_id FROM authBrowserName WHERE v = p_browser_name;
     IF v_browser_name_id IS NULL THEN INSERT INTO authBrowserName (v) VALUES (p_browser_name); SET v_browser_name_id = LAST_INSERT_ID(); END IF;
 
-    SELECT id INTO v_browser_ver_id FROM authBrowserVer WHERE v = p_browser_ver;
-    IF v_browser_ver_id IS NULL THEN INSERT INTO authBrowserVer (v) VALUES (p_browser_ver); SET v_browser_ver_id = LAST_INSERT_ID(); END IF;
+    SELECT id INTO v_browser_ver_id FROM authBrowserVer WHERE v1 = p_browser_v1 AND v2 = p_browser_v2;
+    IF v_browser_ver_id IS NULL THEN
+        INSERT INTO authBrowserVer (v1, v2) VALUES (p_browser_v1, p_browser_v2);
+        SET v_browser_ver_id = LAST_INSERT_ID();
+    END IF;
 
     SELECT id INTO v_browser_lang_id FROM authBrowserLang WHERE v = p_browser_lang;
     IF v_browser_lang_id IS NULL THEN INSERT INTO authBrowserLang (v) VALUES (p_browser_lang); SET v_browser_lang_id = LAST_INSERT_ID(); END IF;
@@ -195,22 +203,22 @@ END$$
 
 DELIMITER ;
 
--- 调用 authSignInLog 函数记录一次登录
 SELECT authSignInLog(
-    1001,                           -- p_uid: 用户ID
-    INET6_ATON('198.51.100.10'),    -- p_ip: 登录IP地址
-    -48,                            -- p_timezone: 时区 (UTC+8 => 8 * 6 = 48, -48表示UTC-8)
-    20,                             -- p_dpi: 屏幕DPI
-    1920,                           -- p_w: 屏幕宽度
-    1080,                           -- p_h: 屏幕高度
-    'x86_64',                       -- p_arch: CPU架构
-    'XPS 15 9520',                  -- p_model: 设备型号
-    10,                             -- p_cpu_num: CPU核心数
-    'NVIDIA GeForce RTX 3080',      -- p_gpu: GPU型号
-    10,                             -- p_os_v1: 操作系统主版本号
-    0,                              -- p_os_v2: 操作系统副版本号
-    'Windows',                      -- p_os_name: 操作系统名称
-    'Chrome',                       -- p_browser_name: 浏览器名称
-    108,                            -- p_browser_ver: 浏览器主版本号
-    'en-US'                         -- p_browser_lang: 浏览器语言
+    1001,
+    INET6_ATON('198.51.100.10'),
+    -48,
+    20,
+    1920,
+    1080,
+    'x86_64',
+    'XPS 15 9520',
+    10,
+    'NVIDIA GeForce RTX 3080',
+    10,
+    0,
+    'Windows',
+    'Chrome',
+    108,
+    0,
+    'en-US'
 );

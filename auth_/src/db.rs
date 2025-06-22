@@ -17,11 +17,12 @@ pub async fn signInLog(
   os_v2: u32,
   os_name: impl AsRef<str>,
   browser_name: impl AsRef<str>,
-  browser_ver: u32,
+  browser_v1: u32,
+  browser_v2: u32,
   browser_lang: impl AsRef<str>,
 ) -> Result<u64> {
   let sql = format!(
-    "SELECT authSignInLog({uid},?,{timezone},{dpi},{w},{h},?,?,{cpu_num},?,{os_v1},{os_v2},?,?,{browser_ver},?)"
+    "SELECT authSignInLog({uid},?,{timezone},{dpi},{w},{h},?,?,{cpu_num},?,{os_v1},{os_v2},?,?,{browser_v1},{browser_v2},?)"
   );
   Ok(q1!(
     sql,
@@ -37,7 +38,7 @@ pub async fn signInLog(
 
 #[macro_export]
 macro_rules! signInLog {
-  ($uid:expr,$ip:expr,$timezone:expr,$dpi:expr,$w:expr,$h:expr,$arch:expr,$model:expr,$cpu_num:expr,$gpu:expr,$os_v1:expr,$os_v2:expr,$os_name:expr,$browser_name:expr,$browser_ver:expr,$browser_lang:expr) => {
+  ($uid:expr,$ip:expr,$timezone:expr,$dpi:expr,$w:expr,$h:expr,$arch:expr,$model:expr,$cpu_num:expr,$gpu:expr,$os_v1:expr,$os_v2:expr,$os_name:expr,$browser_name:expr,$browser_v1:expr,$browser_v2:expr,$browser_lang:expr) => {
     $crate::signInLog(
       $uid,
       $ip,
@@ -53,7 +54,8 @@ macro_rules! signInLog {
       $os_v2,
       $os_name,
       $browser_name,
-      $browser_ver,
+      $browser_v1,
+      $browser_v2,
       $browser_lang,
     )
     .await?
