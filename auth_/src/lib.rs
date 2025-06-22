@@ -54,10 +54,9 @@ pub fn test(
       .unwrap_or_default(),
   );
 
-  // let os_name = ua.os.name.as_deref().unwrap_or_default();
-  // let brand = ua.device.brand.as_deref().unwrap_or_default();
-  // let browser_name = ua.name.as_deref().unwrap_or_default();
-  // let browser_ver = ua.version.as_deref().unwrap_or_default();
+  dbg!(ua.client.family);
+  dbg!(ua.client.version);
+
   let browser_lang = headers
     .get("accept-language")
     .and_then(|v| v.to_str().ok())
