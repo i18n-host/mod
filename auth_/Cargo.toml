@@ -22,10 +22,10 @@ sts = "0.1.23"
 xbin = "0.1.6"
 intbin = "0.2.3"
 xkv = { version = "0.1.44", features = ["r"] }
-tokio = { version = "1.45.1", features = ["rt"] }
+tokio = { version = "1.47.0", features = ["rt"] }
 simple-useragent = "0.1.2"
 static_init = "1.0.4"
-pc = "0.1.12"
+pc = "0.1.13"
 serde = { version = "1.0.219", features = ["derive"] }
 r_ = "0.1.2"
 ih = "0.1.15"
