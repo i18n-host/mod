@@ -9,10 +9,10 @@ description = "user_"
 keywords = ["hpc", "mod"]
 
 [dependencies]
-aok = "0.1.17"
+aok = "0.1.18"
 ctx_ = { version = "0.1.8", features = ["user"] }
-tracing = "0.1.41"
+tracing = "0.1.44"
 
 [dev-dependencies]
-tokio = { version = "1.47.0", features = ["macros", "rt", "rt-multi-thread"] }
-xboot = "0.1.28"
+tokio = { version = "1.50.0", features = ["macros", "rt", "rt-multi-thread"] }
+xboot = "0.1.35"
